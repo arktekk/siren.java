@@ -2,10 +2,14 @@ package net.hamnaberg.siren;
 
 import net.hamnaberg.siren.field.FieldSerializer;
 import net.hamnaberg.siren.field.WWWUrlEncodedFieldSerializer;
+import net.hamnaberg.siren.util.CollectionUtils;
+import net.hamnaberg.siren.util.StreamUtils;
 
 import java.net.URI;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public final class Action {
     public final String name;
@@ -15,13 +19,21 @@ public final class Action {
     public final Optional<MIMEType> type;
     public final List<Field> fields;
 
+    public static Action of(String name, URI href) {
+        return new Action(name, href, Optional.empty(), Optional.empty(), Optional.empty(), Collections.emptyList());
+    }
+
+    public static Action of(String name, URI href, List<Field> fields) {
+        return new Action(name, href, Optional.empty(), Optional.empty(), Optional.empty(), fields);
+    }
+
     public Action(String name, URI href, Optional<String> title, Optional<Method> method, Optional<MIMEType> type, List<Field> fields) {
-        this.name = name;
+        this.name = Objects.requireNonNull(name, "name may not be null");
+        this.href = Objects.requireNonNull(href, "href may not be null");
         this.title = title;
         this.method = method;
-        this.href = href;
         this.type = type;
-        this.fields = fields;
+        this.fields = Collections.unmodifiableList(Objects.requireNonNull(fields, "Fields may not be null"));
     }
 
     public String getName() {
@@ -34,6 +46,45 @@ public final class Action {
 
     public Optional<Field> getFieldByName(String name) {
         return fields.stream().filter(f -> f.name.equalsIgnoreCase(name)).findFirst();
+    }
+
+    public Action withFields(List<Field> fields) {
+        return new Action(name, href, title, method, type, fields);
+    }
+
+    public Action withFields(Field field, Field... fields) {
+        return withFields(CollectionUtils.asList(field, fields));
+    }
+
+    public Action addFields(Field field, Field... fields) {
+        return addFields(CollectionUtils.asList(field, fields));
+    }
+
+    public Action addFields(List<Field> fields) {
+        List<Field> allFields = Stream.concat(this.fields.stream(), fields.stream()).collect(Collectors.toList());
+        return new Action(name, href, title, method, type, allFields);
+    }
+
+    public Action replace(Iterable<Field> replacement) {
+        if (!StreamUtils.stream(replacement).findFirst().isPresent()) {
+            return this;
+        }
+        Map<String, Field> map = StreamUtils.stream(replacement).collect(Collectors.toMap(Field::getName, Function.identity()));
+        List<Field> fields = getFields().stream().flatMap(f -> Stream.of(map.getOrDefault(f.getName(), f))).collect(Collectors.toList());
+
+        return withFields(fields);
+    }
+
+    public Action noFields() {
+        return new Action(name, href, title, method, type, Collections.emptyList());
+    }
+
+    public Action withTitle(String title) {
+        return new Action(name, href, Optional.of(title), method, type, Collections.emptyList());
+    }
+
+    public Action noTitle() {
+        return new Action(name, href, Optional.empty(), method, type, Collections.emptyList());
     }
 
     public Optional<String> format(FieldSerializer serializer) {
