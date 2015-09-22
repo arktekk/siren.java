@@ -1,5 +1,6 @@
 package net.hamnaberg.siren;
 
+import org.hamcrest.CoreMatchers;
 import org.junit.Test;
 
 import java.util.*;
@@ -51,5 +52,12 @@ public class MIMETypeTest {
         });
 
         assertEquals(map.size(), count.get());
+    }
+
+    @Test
+    public void equalsTest() {
+
+        MIMEType exp = MIMEType.application("json");
+        assertThat("json was equal to ALL", exp, CoreMatchers.not(CoreMatchers.equalTo(MIMEType.All)));
     }
 }

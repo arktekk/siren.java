@@ -11,7 +11,7 @@ public final class MIMEType {
     public static final MIMEType All = new MIMEType("*", "*");
     public static final MIMEType JSON = new MIMEType("application", "json");
     public static final MIMEType URLEncoded = new MIMEType("application", "x-www-form-urlencoded");
-    private static final Pattern MIMETypePattern = Pattern.compile("(\\w+|\\*)/(\\w+|\\*);?(.*)?");
+    private static final Pattern MIMETypePattern = Pattern.compile("(\\w+|\\*)/([\\w\\.\\+]+|\\*);?(.*)?");
 
 
     private final String major;
@@ -69,9 +69,9 @@ public final class MIMEType {
     }
 
     public MIMEType(String major, String minor, SortedMap<String, String> parameters) {
-        this.major = major;
-        this.minor = minor;
-        this.parameters = Collections.unmodifiableSortedMap(parameters);
+        this.major = Objects.requireNonNull(major, "major was null");
+        this.minor = Objects.requireNonNull(minor, "minor was null");
+        this.parameters = Collections.unmodifiableSortedMap(Objects.requireNonNull(parameters, "Parameters was null"));
     }
 
     public String getMajor() {
@@ -106,9 +106,9 @@ public final class MIMEType {
     }
 
     public boolean equals(MIMEType mt, boolean includeParams) {
-        boolean equals = mt.getMajor().equals(getMajor()) && mt.getMinor().equals(getMajor());
+        boolean equals = getMajor().equals(mt.getMajor()) && getMinor().equals(mt.getMinor());
         if (includeParams) {
-            equals = zip(getParameters().entrySet().stream(), mt.getParameters().entrySet().stream(), (a, b) -> new AbstractMap.SimpleImmutableEntry<>(a, b)).
+            equals = equals && zip(getParameters().entrySet().stream(), mt.getParameters().entrySet().stream(), (a, b) -> new AbstractMap.SimpleImmutableEntry<>(a, b)).
                     allMatch((e) -> e.getKey().equals(e.getValue()));
         }
         return equals;
