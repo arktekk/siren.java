@@ -12,16 +12,23 @@ public final class Field {
     public final Optional<JsonValue> value;
     public final Optional<String> title;
 
+    public static Field of(String name) {
+        return new Field(name, Classes.empty(), Type.TEXT, Optional.empty(), Optional.empty());
+    }
+
     public static Field of(String name, String value) {
-        return new Field(name, Classes.empty(), Type.TEXT, Optional.ofNullable(value).map(JsonFactory::jsonString), Optional.<String>empty());
+        return new Field(name, Classes.empty(), Type.TEXT, Optional.of(value).map(JsonFactory::jsonString), Optional.empty());
+    }
+    public static Field of(String name, JsonValue value) {
+        return new Field(name, Classes.empty(), Type.TEXT, Optional.of(value), Optional.empty());
     }
 
     public static Field of(String name, Type type, JsonValue value) {
-        return new Field(name, Classes.empty(), type, Optional.ofNullable(value), Optional.<String>empty());
+        return new Field(name, Classes.empty(), type, Optional.of(value), Optional.empty());
     }
 
-    public static Field of(String name, Type type, Optional<JsonValue> value) {
-        return new Field (name, Classes.empty(), type, value, Optional.<String>empty());
+    public static Field of(String name, Type type) {
+        return new Field (name, Classes.empty(), type, Optional.empty(), Optional.empty());
     }
 
     public Field(String name, Classes classes, Type type, Optional<JsonValue> value, Optional<String> title) {
@@ -50,6 +57,26 @@ public final class Field {
 
     public Optional<String> getTitle() {
         return title;
+    }
+
+    public Field withClasses(Classes classes) {
+        return new Field(name, classes, type, value, title);
+    }
+
+    public Field withValue(JsonValue value) {
+        return new Field(name, classes, type, Optional.of(value), title);
+    }
+
+    public Field noValue() {
+        return new Field(name, classes, type, Optional.empty(), title);
+    }
+
+    public Field withTitle(String title) {
+        return new Field(name, classes, type, value, Optional.of(title));
+    }
+
+    public Field noTitle() {
+        return new Field(name, classes, type, value, Optional.empty());
     }
 
     @Override
