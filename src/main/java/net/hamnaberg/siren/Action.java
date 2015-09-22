@@ -1,5 +1,8 @@
 package net.hamnaberg.siren;
 
+import net.hamnaberg.siren.field.FieldSerializer;
+import net.hamnaberg.siren.field.WWWUrlEncodedFieldSerializer;
+
 import java.net.URI;
 import java.util.List;
 import java.util.Optional;
@@ -33,6 +36,13 @@ public final class Action {
         return fields.stream().filter(f -> f.name.equalsIgnoreCase(name)).findFirst();
     }
 
+    public Optional<String> format(FieldSerializer serializer) {
+        return serializer.serialize(type.orElse(MIMEType.URLEncoded), fields);
+    }
+
+    public Optional<String> format() {
+        return format(WWWUrlEncodedFieldSerializer.INSTANCE);
+    }
 
     @Override
     public boolean equals(Object o) {

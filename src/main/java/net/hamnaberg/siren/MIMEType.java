@@ -98,14 +98,25 @@ public final class MIMEType {
     }
 
     public boolean includes(MIMEType mt) {
-        boolean includes = (mt == null || All.equals(mt, false) || this.equals(mt));
+        boolean includes = All.equals(this, false) || this.equals(mt, false);
         if (!includes) {
-            includes = this.major.equals(mt.major) && (this.minor.equals("*")|| this.minor.equals(mt.minor));
+            includes = mt != null && this.major.equals(mt.major) && (this.minor.equals("*") || this.minor.equals(mt.minor));
+        }
+        return includes;
+    }
+
+    public boolean includedBy(MIMEType mt) {
+        boolean includes = null == mt || All.equals(mt, false) || this.equals(mt, false);
+        if (!includes) {
+            includes = this.major.equals(mt.major) && (mt.minor.equals("*") || this.minor.equals(mt.minor));
         }
         return includes;
     }
 
     public boolean equals(MIMEType mt, boolean includeParams) {
+        if (this == mt) return true;
+        if (mt == null) return false;
+
         boolean equals = getMajor().equals(mt.getMajor()) && getMinor().equals(mt.getMinor());
         if (includeParams) {
             equals = equals && zip(getParameters().entrySet().stream(), mt.getParameters().entrySet().stream(), (a, b) -> new AbstractMap.SimpleImmutableEntry<>(a, b)).
