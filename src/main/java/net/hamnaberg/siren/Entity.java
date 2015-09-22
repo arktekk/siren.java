@@ -6,7 +6,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
-public class Entity {
+public final class Entity implements WithLinks, WithEntities, WithActions {
     public final Optional<URI> href;
     public final Relations rels;
     public final Classes classes;
@@ -29,15 +29,41 @@ public class Entity {
         this.links = links;
     }
 
-    public Optional<Action> getActionByName(String name) {
-        return actions.stream().filter(a -> a.name.equalsIgnoreCase(name)).findFirst();
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Entity entity = (Entity) o;
+
+        if (!href.equals(entity.href)) return false;
+        if (!rels.equals(entity.rels)) return false;
+        if (!classes.equals(entity.classes)) return false;
+        if (!properties.equals(entity.properties)) return false;
+        if (!entities.equals(entity.entities)) return false;
+        if (!actions.equals(entity.actions)) return false;
+        return links.equals(entity.links);
+
+    }
+
+    @Override
+    public int hashCode() {
+        int result = href.hashCode();
+        result = 31 * result + rels.hashCode();
+        result = 31 * result + classes.hashCode();
+        result = 31 * result + properties.hashCode();
+        result = 31 * result + entities.hashCode();
+        result = 31 * result + actions.hashCode();
+        result = 31 * result + links.hashCode();
+        return result;
     }
 
     public Optional<URI> getHref() {
         return href;
     }
 
-    public Relations getRels() {
+    public Relations getRelations() {
         return rels;
     }
 

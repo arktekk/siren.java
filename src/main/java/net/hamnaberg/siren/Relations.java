@@ -21,12 +21,17 @@ public final class Relations implements StreamableIterable<String> {
         return new Relations(StreamUtils.stream(rels).collect(Collectors.toList()));
     }
 
-    public Relations(List<String> rels) {
+    Relations(List<String> rels) {
         this.rels = Collections.unmodifiableList(rels);
     }
 
     public Optional<String> headOption() {
         return stream().findFirst();
+    }
+
+    public boolean matches(String... rels) {
+        List<String> list = Arrays.asList(rels);
+        return stream().allMatch(list::contains);
     }
 
     public boolean isEmpty() {

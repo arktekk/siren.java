@@ -6,7 +6,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
-public final class Siren {
+public final class Siren implements WithLinks, WithEntities, WithActions {
     public final Classes classes;
     public final Optional<JsonObject> properties;
     public final List<Entity> entities;
@@ -25,12 +25,33 @@ public final class Siren {
         this.links = links;
     }
 
-    public Entity toEntity(URI uri, Relations rels) {
-        return new Entity(Optional.of(uri), rels, classes, properties, Collections.emptyList(), actions, links);
+    public Entity toEntity(Optional<URI> href, Relations rels) {
+        return new Entity(href, rels, classes, properties, Collections.emptyList(), actions, links);
     }
 
-    public Optional<Action> getActionByName(String name) {
-        return actions.stream().filter(a -> a.name.equalsIgnoreCase(name)).findFirst();
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Siren siren = (Siren) o;
+
+        if (!classes.equals(siren.classes)) return false;
+        if (!properties.equals(siren.properties)) return false;
+        if (!entities.equals(siren.entities)) return false;
+        if (!actions.equals(siren.actions)) return false;
+        return links.equals(siren.links);
+
+    }
+
+    @Override
+    public int hashCode() {
+        int result = classes.hashCode();
+        result = 31 * result + properties.hashCode();
+        result = 31 * result + entities.hashCode();
+        result = 31 * result + actions.hashCode();
+        result = 31 * result + links.hashCode();
+        return result;
     }
 
     public Classes getClasses() {

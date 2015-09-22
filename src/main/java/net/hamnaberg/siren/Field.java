@@ -104,7 +104,7 @@ public final class Field {
             this.value = s;
         }
 
-        public Type fromString(String s) {
+        public static Type fromString(String s) {
             for (Type v : values()) {
                 if (v.value.equals(s)) {
                     return v;

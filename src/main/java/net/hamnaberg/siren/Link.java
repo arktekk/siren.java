@@ -31,4 +31,27 @@ public final class Link {
     public Optional<MIMEType> getType() {
         return type;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Link link = (Link) o;
+
+        if (!href.equals(link.href)) return false;
+        if (!relations.equals(link.relations)) return false;
+        if (!title.equals(link.title)) return false;
+        return type.equals(link.type);
+
+    }
+
+    @Override
+    public int hashCode() {
+        int result = href.hashCode();
+        result = 31 * result + relations.hashCode();
+        result = 31 * result + title.hashCode();
+        result = 31 * result + type.hashCode();
+        return result;
+    }
 }

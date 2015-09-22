@@ -18,7 +18,7 @@ public final class Classes implements StreamableIterable<String> {
         this(StreamUtils.stream(classes).collect(Collectors.toList()));
     }
 
-    private Classes(List<String> classes) {
+    Classes(List<String> classes) {
         this.classes = Collections.unmodifiableList(classes);
     }
 
@@ -33,12 +33,24 @@ public final class Classes implements StreamableIterable<String> {
         );
     }
 
-    public Optional<String> headOption() {
-        return stream().findFirst();
-    }
-
     @Override
     public Iterator<String> iterator() {
         return classes.iterator();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Classes strings = (Classes) o;
+
+        return classes.equals(strings.classes);
+
+    }
+
+    @Override
+    public int hashCode() {
+        return classes.hashCode();
     }
 }
