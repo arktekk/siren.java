@@ -2,6 +2,8 @@ package net.hamnaberg.siren;
 
 import javax.json.*;
 import java.io.InputStream;
+import java.io.Reader;
+import java.io.StringReader;
 import java.net.URI;
 import java.util.List;
 import java.util.Optional;
@@ -11,6 +13,19 @@ import java.util.stream.Collectors;
 public final class SirenParser {
     public Optional<Siren> parse(InputStream is) {
         JsonReader parser = Json.createReader(is);
+        return parseSiren(parser);
+    }
+
+    public Optional<Siren> parse(Reader reader) {
+        JsonReader parser = Json.createReader(reader);
+        return parseSiren(parser);
+    }
+
+    public Optional<Siren> parse(String input) {
+        return parse(new StringReader(input));
+    }
+
+    private Optional<Siren> parseSiren(JsonReader parser) {
         JsonStructure struct = parser.read();
         if (struct instanceof JsonObject) {
             return Optional.of(parseSiren((JsonObject) struct));
