@@ -6,7 +6,9 @@ import java.util.function.BiFunction;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
-public class StreamUtils {
+public abstract class StreamUtils {
+    private StreamUtils(){}
+
     public static <A, B, C> Stream<C> zip(Stream<A> streamA, Stream<B> streamB, BiFunction<A, B, C> zipper) {
         final Iterator<A> iteratorA = streamA.iterator();
         final Iterator<B> iteratorB = streamB.iterator();
@@ -27,11 +29,14 @@ public class StreamUtils {
 
     public static <T> Stream<T> iteratorToFiniteStream(Iterator<T> iterator, boolean parallel) {
         final Iterable<T> iterable = () -> iterator;
-        return StreamSupport.stream(iterable.spliterator(), parallel);
+        return parallel ? parallellStream(iterable) : stream(iterable);
     }
 
     public static <T> Stream<T> stream(Iterable<T> iterable) {
         return StreamSupport.stream(iterable.spliterator(), false);
+    }
+    public static <T> Stream<T> parallellStream(Iterable<T> iterable) {
+        return StreamSupport.stream(iterable.spliterator(), true);
     }
 
     public static <T> Stream<T> stream(Optional<T> opt) {

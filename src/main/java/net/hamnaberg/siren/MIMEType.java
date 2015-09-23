@@ -9,10 +9,11 @@ import java.util.stream.Collectors;
 
 public final class MIMEType {
     public static final MIMEType All = new MIMEType("*", "*");
-    public static final MIMEType JSON = new MIMEType("application", "json");
-    public static final MIMEType URLEncoded = new MIMEType("application", "x-www-form-urlencoded");
-    private static final Pattern MIMETypePattern = Pattern.compile("(\\w+|\\*)/([\\w\\.\\+]+|\\*);?(.*)?");
+    public static final MIMEType JSON = MIMEType.application("json");
+    public static final MIMEType SIREN = MIMEType.application("vnd.siren+json");
+    public static final MIMEType URLEncoded = MIMEType.application("x-www-form-urlencoded");
 
+    private static final Pattern MIMETypePattern = Pattern.compile("(\\w+|\\*)/([\\w\\.\\+]+|\\*);?(.*)?");
 
     private final String major;
     private final String minor;
