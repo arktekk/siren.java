@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-  ~ Copyright 2015 Erlend Hamnaberg
+  ~ Copyright 2015 Arktekk AS
   ~
   ~ Licensed under the Apache License, Version 2.0 (the "License");
   ~ you may not use this file except in compliance with the License.
@@ -18,24 +18,24 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
   <modelVersion>4.0.0</modelVersion>
-  <groupId>net.hamnaberg.json</groupId>
+  <groupId>no.arktekk</groupId>
   <artifactId>siren-java</artifactId>
   <version>1.0-SNAPSHOT</version>
   <packaging>jar</packaging>
   <name>Siren</name>
-  <url>https://github.com/hamnis/siren.java</url>
+  <url>https://github.com/arktekk/siren.java</url>
   <inceptionYear>2015</inceptionYear>
 
   <scm>
-    <url>https://github.com/hamnis/siren.java</url>
-    <connection>scm:git:https://hamnis@github.com/hamnis/siren.java.git</connection>
-    <developerConnection>scm:git:git@github.com:hamnis/siren.java.git</developerConnection>
+    <url>https://github.com/arktekk/siren.java</url>
+    <connection>scm:git:https://arktekk@github.com/arktekk/siren.java.git</connection>
+    <developerConnection>scm:git:git@github.com:arktekk/siren.java.git</developerConnection>
     <tag>HEAD</tag>
   </scm>
 
   <issueManagement>
     <system>github</system>
-    <url>https://github.com/hamnis/siren.java/issues</url>
+    <url>https://github.com/arktekk/siren.java/issues</url>
   </issueManagement>
 
   <distributionManagement>
@@ -64,6 +64,11 @@
       <name>Erlend Hamnaberg</name>
       <email>erlend@hamnaberg.net</email>
       <url>http://twitter.com/hamnis</url>
+    </developer>
+    <developer>
+      <id>nor</id>
+      <name>Kristian Nordal</name>
+      <email>kristian.nordal@gmail.com</email>
     </developer>
   </developers>
 
