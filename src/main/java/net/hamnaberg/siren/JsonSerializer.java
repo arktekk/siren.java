@@ -12,28 +12,28 @@ public interface JsonSerializer<T> {
 
     T serialize(EmbeddedLink embeddedLink);
 
-    T serialize(Siren siren);
+    T serialize(Entity entity);
 
     final class JavaxJsonSerializer implements JsonSerializer<JsonValue> {
 
         private static Function<Iterable<String>, JsonArray> FromIterableString =
                 strings -> JsonFactory.arrayOf(StreamUtils.stream(strings).<JsonValue>map(JsonFactory::jsonString).collect(Collectors.toList()));
 
-        private JsonObjectBuilder sirenBuilder(Siren siren) {
+        private JsonObjectBuilder sirenBuilder(Entity entity) {
             JsonObjectBuilder builder = Json.createObjectBuilder();
-            builder.add("class", FromIterableString.apply(siren.classes));
-            siren.properties.ifPresent(ps -> builder.add("properties", ps));
-            if (!siren.entities.isEmpty())
-                builder.add("entities", JsonFactory.arrayOf(siren.entities.stream().map(e -> e.toJson(this)).collect(Collectors.toList())));
-            if (!siren.links.isEmpty())
-                builder.add("links", JsonFactory.arrayOf(siren.links.stream().map(l -> {
+            builder.add("class", FromIterableString.apply(entity.classes));
+            entity.properties.ifPresent(ps -> builder.add("properties", ps));
+            if (!entity.entities.isEmpty())
+                builder.add("entities", JsonFactory.arrayOf(entity.entities.stream().map(e -> e.toJson(this)).collect(Collectors.toList())));
+            if (!entity.links.isEmpty())
+                builder.add("links", JsonFactory.arrayOf(entity.links.stream().map(l -> {
                     JsonObjectBuilder link = Json.createObjectBuilder();
-                    l.relations.ifPresent(rel -> link.add("rel", FromIterableString.apply(rel)));
+                    link.add("rel", FromIterableString.apply(l.rel));
                     link.add("href", l.href.toString()); // TODO: denne skal sikker encodes
                     return link.build();
                 }).collect(Collectors.toList())));
-            if (!siren.actions.isEmpty())
-                builder.add("action", JsonFactory.arrayOf(siren.actions.stream().map(a -> {
+            if (!entity.actions.isEmpty())
+                builder.add("action", JsonFactory.arrayOf(entity.actions.stream().map(a -> {
                     JsonObjectBuilder action = Json.createObjectBuilder();
                     action.add("name", a.name);
                     action.add("class", FromIterableString.apply(a.classes));
@@ -49,23 +49,23 @@ public interface JsonSerializer<T> {
                         }).collect(Collectors.toList())));
                     return action.build();
                 }).collect(Collectors.toList())));
-            siren.title.ifPresent(t -> builder.add("title", t));
+            entity.title.ifPresent(t -> builder.add("title", t));
             return builder;
         }
 
-        public JsonValue serialize(Siren siren) {
-            return sirenBuilder(siren).build();
+        public JsonValue serialize(Entity entity) {
+            return sirenBuilder(entity).build();
         }
 
         public JsonValue serialize(EmbeddedRepresentation embeddedRepresentation) {
-            return sirenBuilder(embeddedRepresentation.siren).add("rel", FromIterableString.apply(embeddedRepresentation.rels)).build();
+            return sirenBuilder(embeddedRepresentation.entity).add("rel", FromIterableString.apply(embeddedRepresentation.rel)).build();
         }
 
         public JsonValue serialize(EmbeddedLink embeddedLink) {
             JsonObjectBuilder object = Json.createObjectBuilder();
             object.add("class", FromIterableString.apply(embeddedLink.classes));
-            object.add("rel", FromIterableString.apply(embeddedLink.rels));
-            embeddedLink.href.ifPresent(h -> object.add("href", h.toString())); // TODO: denne skal sikker encodes
+            object.add("rel", FromIterableString.apply(embeddedLink.rel));
+            object.add("href", embeddedLink.href.toString()); // TODO: denne skal sikkert encodes
             embeddedLink.title.ifPresent(t -> object.add("title", t));
             embeddedLink.type.ifPresent(t -> object.add("type", t.format())); // TODO: riktig?
             return object.build();

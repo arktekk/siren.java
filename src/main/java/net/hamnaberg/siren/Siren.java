@@ -1,52 +1,28 @@
 package net.hamnaberg.siren;
 
+import javax.json.Json;
 import javax.json.JsonObject;
-import java.util.List;
-import java.util.Optional;
+import javax.json.JsonReader;
+import javax.json.JsonValue;
+import java.io.InputStream;
+import java.io.StringReader;
 
-public final class Siren implements Entity {
-    public final Classes classes;
-    public final Optional<JsonObject> properties;
-    public final List<Entity> entities;
-    public final List<Action> actions;
-    public final List<Link> links;
-    public final Optional<String> title;
+public final class Siren {
 
-    public Siren(Classes classes, Optional<JsonObject> properties, List<Entity> entities, List<Action> actions, List<Link> links, Optional<String> title) {
-        this.classes = classes;
-        this.properties = properties;
-        this.entities = entities;
-        this.actions = actions;
-        this.links = links;
-        this.title = title;
+    public static Entity fromJson(InputStream is, JsonParser<JsonObject> parser) {
+        try (JsonReader reader = Json.createReader(is)) {
+            return parser.fromJson(reader.readObject());
+        }
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
-        Siren siren = (Siren) o;
-
-        if (!classes.equals(siren.classes)) return false;
-        if (!properties.equals(siren.properties)) return false;
-        if (!entities.equals(siren.entities)) return false;
-        if (!actions.equals(siren.actions)) return false;
-        return links.equals(siren.links);
-
+    public static Entity fromJson(String json, JsonParser<JsonObject> parser) {
+        try (StringReader sReader = new StringReader(json); JsonReader reader = Json.createReader(sReader)) {
+            return parser.fromJson(reader.readObject());
+        }
     }
 
-    @Override
-    public int hashCode() {
-        int result = classes.hashCode();
-        result = 31 * result + properties.hashCode();
-        result = 31 * result + entities.hashCode();
-        result = 31 * result + actions.hashCode();
-        result = 31 * result + links.hashCode();
-        return result;
+    public static JsonValue toJson(Entity entity, JsonSerializer<JsonValue> serializer) {
+        return serializer.serialize(entity);
     }
 
-    public <T> T toJson(JsonSerializer<T> serializer) {
-        return serializer.serialize(this);
-    }
 }
