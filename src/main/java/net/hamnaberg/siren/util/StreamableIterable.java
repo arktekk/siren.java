@@ -9,7 +9,15 @@ public interface StreamableIterable<T> extends Iterable<T> {
         return StreamUtils.stream(this);
     }
 
+    default Stream<T> parallellStream() {
+        return StreamUtils.parallellStream(this);
+    }
+
     default Optional<T> headOption() {
         return stream().findFirst();
+    }
+
+    default boolean isEmpty() {
+        return !headOption().isPresent();
     }
 }

@@ -71,8 +71,12 @@ public final class Action {
         if (!StreamUtils.stream(replacement).findFirst().isPresent()) {
             return this;
         }
-        Map<String, Field> map = StreamUtils.stream(replacement).collect(Collectors.toMap(Field::getName, Function.identity()));
-        List<Field> fields = getFields().stream().flatMap(f -> Stream.of(map.getOrDefault(f.getName(), f))).collect(Collectors.toList());
+        Map<String, Field> map = StreamUtils.stream(replacement).
+                collect(Collectors.toMap(Field::getName, Function.identity()));
+
+        List<Field> fields = getFields().stream().
+                map(f -> map.getOrDefault(f.getName(), f)).
+                collect(Collectors.toList());
 
         return withFields(fields);
     }

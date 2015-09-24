@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public final class SirenParser {
 /*
@@ -37,9 +38,9 @@ public final class SirenParser {
     private Siren parseSiren(JsonObject object) {
         Classes clazz = new Classes(arrayToStringList(arrayOrEmpty(object, "class")));
         Optional<JsonObject> properties = Optional.ofNullable(object.getJsonObject("properties"));
-        List<Entity> entities = parseList(arrayOrEmpty(object, "entities"), this::parseEntity);
-        List<Action> actions = parseList(arrayOrEmpty(object, "actions"), this::parseAction);
-        List<Link> links = parseList(arrayOrEmpty(object, "links"), this::parseLink);
+        List<Entity> entities = mapObjectList(arrayOrEmpty(object, "entities"), this::parseEntity);
+        List<Action> actions = mapObjectList(arrayOrEmpty(object, "actions"), this::parseAction);
+        List<Link> links = mapObjectList(arrayOrEmpty(object, "links"), this::parseLink);
         return new Siren(clazz, properties, entities, actions, links);
     }
 
@@ -62,7 +63,7 @@ public final class SirenParser {
         Optional<Method> method = Optional.ofNullable(action.getString("method")).map(Method::valueOf);
         Optional<MIMEType> type = Optional.ofNullable(action.getString("type")).flatMap(MIMEType::parse);
 
-        List<Field> fields = parseList(arrayOrEmpty(action, "fields"), this::parseField);
+        List<Field> fields = mapObjectList(arrayOrEmpty(action, "fields"), this::parseField);
 
         return new Action(name, href, Optional.ofNullable(action.getString("title")), method, type, fields);
     }
@@ -94,9 +95,8 @@ public final class SirenParser {
     }
 
 
-    private <A> List<A> parseList(JsonArray list, Function<JsonObject, A> f) {
-        List<JsonObject> linkObjects = arrayToObjectList(list);
-        return linkObjects.stream().map(f).collect(Collectors.toList());
+    private <A> List<A> mapObjectList(JsonArray list, Function<JsonObject, A> f) {
+        return arrayToObjectStream(list).map(f).collect(Collectors.toList());
     }
 
     private JsonArray arrayOrEmpty(JsonObject object, String name) {
@@ -110,11 +110,10 @@ public final class SirenParser {
                 collect(Collectors.toList());
     }
 
-    private List<JsonObject> arrayToObjectList(JsonArray classes) {
+    private Stream<JsonObject> arrayToObjectStream(JsonArray classes) {
         return classes.stream().
                 filter(j -> j.getValueType() == JsonValue.ValueType.OBJECT).
-                map(j -> ((JsonObject) j)).
-                collect(Collectors.toList());
+                map(j -> ((JsonObject) j));
     }
 */
 }
