@@ -11,6 +11,7 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 public final class SirenParser {
+/*
     public Optional<Siren> parse(InputStream is) {
         JsonReader parser = Json.createReader(is);
         return parseSiren(parser);
@@ -115,4 +116,5 @@ public final class SirenParser {
                 map(j -> ((JsonObject) j)).
                 collect(Collectors.toList());
     }
+*/
 }

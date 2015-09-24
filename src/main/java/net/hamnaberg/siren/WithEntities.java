@@ -6,6 +6,7 @@ import java.util.stream.Collectors;
 
 public interface WithEntities {
 
+/*
     default List<Entity> getEntitiesByRel(Relations rel) {
         return getEntities().stream().filter(l -> l.getRelations().equals(rel)).collect(Collectors.toList());
     }
@@ -21,6 +22,7 @@ public interface WithEntities {
     default Optional<Entity> getEntityByRel(String rel) {
         return getEntities().stream().filter(l -> l.getRelations().matches(rel)).findFirst();
     }
+*/
 
     List<Entity> getEntities();
 }

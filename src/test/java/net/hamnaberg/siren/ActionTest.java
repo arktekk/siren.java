@@ -23,7 +23,7 @@ public class ActionTest {
         assertEquals(Optional.empty(), action.type);
         assertEquals(Collections.emptyList(), action.fields);
 
-        Action action1 = new Action("balle", uri, Optional.empty(), Optional.empty(), Optional.empty(), Collections.emptyList());
+        Action action1 = new Action("balle", Classes.empty(), uri, Optional.empty(), Optional.empty(), Optional.empty(), Collections.emptyList());
         assertEquals(action1, action);
     }
 

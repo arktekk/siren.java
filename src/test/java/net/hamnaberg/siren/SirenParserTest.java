@@ -8,6 +8,7 @@ import java.util.Optional;
 import static org.junit.Assert.*;
 
 public class SirenParserTest {
+/*
     SirenParser parser = new SirenParser();
 
     @Test
@@ -16,4 +17,5 @@ public class SirenParserTest {
         assertThat(parse.isPresent(), CoreMatchers.equalTo(true));
         assertThat(parse.get(), CoreMatchers.equalTo(Siren.empty()));
     }
+*/
 }

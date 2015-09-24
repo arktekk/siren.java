@@ -6,6 +6,7 @@ import java.util.stream.Collectors;
 
 public interface WithLinks {
 
+/*
     default List<Link> getLinksByRel(Relations rel) {
         return getLinks().stream().filter(l -> l.getRelations().equals(rel)).collect(Collectors.toList());
     }
@@ -21,6 +22,7 @@ public interface WithLinks {
     default Optional<Link> getLinkByRel(String rel) {
         return getLinks().stream().filter(l -> l.getRelations().matches(rel)).findFirst();
     }
+*/
 
     List<Link> getLinks();
 }

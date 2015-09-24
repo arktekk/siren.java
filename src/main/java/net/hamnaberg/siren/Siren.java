@@ -1,32 +1,24 @@
 package net.hamnaberg.siren;
 
 import javax.json.JsonObject;
-import java.net.URI;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
-public final class Siren implements WithLinks, WithEntities, WithActions {
+public final class Siren implements Entity {
     public final Classes classes;
     public final Optional<JsonObject> properties;
     public final List<Entity> entities;
     public final List<Action> actions;
     public final List<Link> links;
+    public final Optional<String> title;
 
-    public static Siren empty() {
-        return new Siren(Classes.empty(), Optional.<JsonObject>empty(), Collections.emptyList(), Collections.emptyList(), Collections.emptyList());
-    }
-
-    public Siren(Classes classes, Optional<JsonObject> properties, List<Entity> entities, List<Action> actions, List<Link> links) {
+    public Siren(Classes classes, Optional<JsonObject> properties, List<Entity> entities, List<Action> actions, List<Link> links, Optional<String> title) {
         this.classes = classes;
         this.properties = properties;
         this.entities = entities;
         this.actions = actions;
         this.links = links;
-    }
-
-    public Entity toEntity(Optional<URI> href, Relations rels) {
-        return new Entity(href, rels, classes, properties, Collections.emptyList(), actions, links);
+        this.title = title;
     }
 
     @Override
@@ -54,23 +46,7 @@ public final class Siren implements WithLinks, WithEntities, WithActions {
         return result;
     }
 
-    public Classes getClasses() {
-        return classes;
-    }
-
-    public Optional<JsonObject> getProperties() {
-        return properties;
-    }
-
-    public List<Entity> getEntities() {
-        return entities;
-    }
-
-    public List<Action> getActions() {
-        return actions;
-    }
-
-    public List<Link> getLinks() {
-        return links;
+    public <T> T toJson(JsonSerializer<T> serializer) {
+        return serializer.serialize(this);
     }
 }

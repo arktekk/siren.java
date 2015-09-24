@@ -13,6 +13,7 @@ import java.util.stream.Stream;
 
 public final class Action {
     public final String name;
+    public final Classes classes;
     public final URI href;
     public final Optional<String> title;
     public final Optional<Method> method;
@@ -20,15 +21,16 @@ public final class Action {
     public final List<Field> fields;
 
     public static Action of(String name, URI href) {
-        return new Action(name, href, Optional.empty(), Optional.empty(), Optional.empty(), Collections.emptyList());
+        return new Action(name, Classes.empty(), href, Optional.empty(), Optional.empty(), Optional.empty(), Collections.emptyList());
     }
 
     public static Action of(String name, URI href, List<Field> fields) {
-        return new Action(name, href, Optional.empty(), Optional.empty(), Optional.empty(), fields);
+        return new Action(name, Classes.empty(), href, Optional.empty(), Optional.empty(), Optional.empty(), fields);
     }
 
-    public Action(String name, URI href, Optional<String> title, Optional<Method> method, Optional<MIMEType> type, List<Field> fields) {
+    public Action(String name, Classes classes, URI href, Optional<String> title, Optional<Method> method, Optional<MIMEType> type, List<Field> fields) {
         this.name = Objects.requireNonNull(name, "name may not be null");
+        this.classes = classes;
         this.href = Objects.requireNonNull(href, "href may not be null");
         this.title = title;
         this.method = method;
@@ -49,7 +51,7 @@ public final class Action {
     }
 
     public Action withFields(List<Field> fields) {
-        return new Action(name, href, title, method, type, fields);
+        return new Action(name, classes, href, title, method, type, fields);
     }
 
     public Action withFields(Field field, Field... fields) {
@@ -62,7 +64,7 @@ public final class Action {
 
     public Action addFields(List<Field> fields) {
         List<Field> allFields = Stream.concat(this.fields.stream(), fields.stream()).collect(Collectors.toList());
-        return new Action(name, href, title, method, type, allFields);
+        return new Action(name, classes, href, title, method, type, allFields);
     }
 
     public Action replace(Iterable<Field> replacement) {
@@ -76,15 +78,15 @@ public final class Action {
     }
 
     public Action noFields() {
-        return new Action(name, href, title, method, type, Collections.emptyList());
+        return new Action(name, classes, href, title, method, type, Collections.emptyList());
     }
 
     public Action withTitle(String title) {
-        return new Action(name, href, Optional.of(title), method, type, Collections.emptyList());
+        return new Action(name, classes, href, Optional.of(title), method, type, Collections.emptyList());
     }
 
     public Action noTitle() {
-        return new Action(name, href, Optional.empty(), method, type, Collections.emptyList());
+        return new Action(name, classes, href, Optional.empty(), method, type, Collections.emptyList());
     }
 
     public Optional<String> format(FieldSerializer serializer) {
