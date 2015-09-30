@@ -109,6 +109,7 @@ public final class Action {
         Action action = (Action) o;
 
         if (!name.equals(action.name)) return false;
+        if (!classes.equals(action.classes)) return false;
         if (!href.equals(action.href)) return false;
         if (!title.equals(action.title)) return false;
         if (!method.equals(action.method)) return false;
@@ -120,6 +121,7 @@ public final class Action {
     @Override
     public int hashCode() {
         int result = name.hashCode();
+        result = 31 * result + classes.hashCode();
         result = 31 * result + href.hashCode();
         result = 31 * result + title.hashCode();
         result = 31 * result + method.hashCode();

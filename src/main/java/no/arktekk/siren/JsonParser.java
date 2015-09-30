@@ -32,13 +32,20 @@ public interface JsonParser<T> {
             return object.containsKey("title") ? Optional.of(object.getString("title")) : Optional.empty();
         }
 
+        private Optional<String> get(JsonObject object, String key) {
+            if (object.containsKey(key))
+                return Optional.ofNullable(object.getString(key));
+            else
+                return Optional.empty();
+        }
+
         private Link parseLink(JsonObject obj) {
             URI href = getHref(obj, "Link");
             Relations rels = new Relations(arrayToStringList(obj.getJsonArray("rel")));
             if (rels.isEmpty()) {
                 throw new SirenParseException(String.format("Empty 'rel' in Link '%s'", obj));
             }
-            Optional<MIMEType> type = Optional.ofNullable(obj.getString("type")).flatMap(MIMEType::parse);
+            Optional<MIMEType> type = get(obj, "type").flatMap(MIMEType::parse);
             Classes clazz = new Classes(arrayToStringList(arrayOrEmpty(obj, "class")));
             return new Link(clazz, rels, href, type, parseTitle(obj));
         }
@@ -49,13 +56,13 @@ public interface JsonParser<T> {
                 throw new SirenParseException(String.format("Missing required 'name' field in Action '%s", action));
             }
             URI href = getHref(action, "Action");
-            Optional<Method> method = Optional.ofNullable(action.getString("method")).map(Method::valueOf);
-            Optional<MIMEType> type = Optional.ofNullable(action.getString("type")).flatMap(MIMEType::parse);
+            Optional<Method> method = get(action, "method").map(Method::valueOf);
+            Optional<MIMEType> type = get(action, "type").flatMap(MIMEType::parse);
 
             List<Field> fields = mapObjectList(arrayOrEmpty(action, "fields"), this::parseField);
 
             Classes clazz = new Classes(arrayToStringList(arrayOrEmpty(action, "class")));
-            return new Action(name, clazz, href, Optional.ofNullable(action.getString("title")), method, type, fields);
+            return new Action(name, clazz, href, get(action, "title"), method, type, fields);
         }
 
         private SubEntity parseSubEntity(JsonObject entity) {
@@ -83,7 +90,7 @@ public interface JsonParser<T> {
             Classes clazz = new Classes(arrayToStringList(arrayOrEmpty(field, "class")));
             Field.Type type = Field.Type.fromString(field.getString("type", "text"));
 
-            return new Field(name, clazz, type, Optional.ofNullable(field.get("value")), Optional.ofNullable(field.getString("title")));
+            return new Field(name, clazz, type, Optional.ofNullable(field.get("value")), get(field, "title"));
         }
 
         private URI getHref(JsonObject obj, String name) {

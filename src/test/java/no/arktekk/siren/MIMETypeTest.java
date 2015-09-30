@@ -57,8 +57,13 @@ public class MIMETypeTest {
 
     @Test
     public void equalsTest() {
-
         MIMEType exp = MIMEType.application("json");
         assertThat("json was equal to ALL", exp, CoreMatchers.not(CoreMatchers.equalTo(MIMEType.All)));
+    }
+
+    @Test
+    public void parse() {
+        Optional<MIMEType> type = MIMEType.parse("application/x-www-form-urlencoded");
+        assertTrue(type.map(MIMEType.application("x-www-form-urlencoded")::equals).orElse(false));
     }
 }

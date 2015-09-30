@@ -33,7 +33,7 @@ public interface JsonSerializer<T> {
                     return link.build();
                 }).collect(Collectors.toList())));
             if (!entity.actions.isEmpty())
-                builder.add("action", JsonFactory.arrayOf(entity.actions.stream().map(a -> {
+                builder.add("actions", JsonFactory.arrayOf(entity.actions.stream().map(a -> {
                     JsonObjectBuilder action = Json.createObjectBuilder();
                     action.add("name", a.name);
                     action.add("class", FromIterableString.apply(a.classes));
@@ -44,7 +44,12 @@ public interface JsonSerializer<T> {
                     if (!a.fields.isEmpty())
                         action.add("fields", JsonFactory.arrayOf(a.fields.stream().map(f -> {
                             JsonObjectBuilder field = Json.createObjectBuilder();
-                            // TODO: få inn field
+                            field.add("name", f.name);
+                            if (!f.classes.isEmpty())
+                                field.add("class", FromIterableString.apply(f.classes));
+                            field.add("type", f.type.value);
+                            f.value.ifPresent(v -> field.add("value", v));
+                            f.title.ifPresent(t -> field.add("title", t));
                             return field.build();
                         }).collect(Collectors.toList())));
                     return action.build();
@@ -67,7 +72,7 @@ public interface JsonSerializer<T> {
             object.add("rel", FromIterableString.apply(embeddedLink.rel));
             object.add("href", embeddedLink.href.toString()); // TODO: denne skal sikkert encodes
             embeddedLink.title.ifPresent(t -> object.add("title", t));
-            embeddedLink.type.ifPresent(t -> object.add("type", t.format())); // TODO: riktig?
+            embeddedLink.type.ifPresent(t -> object.add("type", t.format()));
             return object.build();
         }
     }
