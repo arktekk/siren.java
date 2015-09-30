@@ -15,6 +15,7 @@ public class MIMETypeTest {
         Map<String, MIMEType> map = new HashMap<>();
         map.put("application/json", MIMEType.application("json"));
         map.put("application/atom+xml", MIMEType.application("atom+xml"));
+        map.put("application/x-www-form-urlencoded", MIMEType.application("x-www-form-urlencoded"));
         map.put("application/xml; charset=utf-8", MIMEType.application("xml", Collections.singletonMap("charset", "utf-8")));
         map.put("application/vnd.collection+json; charset=utf-8; profile=http://example.com/balle&heioghopp=meh",
                 MIMEType.application("vnd.collection+json", new HashMap<String, String>() {{

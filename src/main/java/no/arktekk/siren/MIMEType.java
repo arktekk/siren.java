@@ -13,7 +13,7 @@ public final class MIMEType {
     public static final MIMEType SIREN = MIMEType.application("vnd.siren+json");
     public static final MIMEType URLEncoded = MIMEType.application("x-www-form-urlencoded");
 
-    private static final Pattern MIMETypePattern = Pattern.compile("(\\w+|\\*)/([\\w\\.\\+]+|\\*);?(.*)?");
+    private static final Pattern MIMETypePattern = Pattern.compile("(\\w+|\\*)/([\\w\\.\\-\\+]+|\\*);?(.*)?");
 
     private final String major;
     private final String minor;
