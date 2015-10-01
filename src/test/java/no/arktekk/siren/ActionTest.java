@@ -3,37 +3,35 @@ package no.arktekk.siren;
 import org.junit.Test;
 
 import java.net.URI;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
 
-import static org.junit.Assert.*;
+import static java.util.Optional.empty;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotSame;
 
 public class ActionTest {
     URI uri = URI.create("http://example.com/dostuff");
 
     @Test
     public void construct() {
-        Action action = Action.of("balle", uri);
-        assertEquals("balle", action.name);
+        Action action = Action.of("æksjen", uri);
+        assertEquals("æksjen", action.name);
         assertEquals(uri, action.href);
-        assertEquals(Optional.empty(), action.title);
-        assertEquals(Optional.empty(), action.method);
-        assertEquals(Optional.empty(), action.type);
-        assertEquals(Collections.emptyList(), action.fields);
+        assertEquals(empty(), action.title);
+        assertEquals(empty(), action.method);
+        assertEquals(empty(), action.type);
+        assertEquals(empty(), action.fields);
 
-        Action action1 = new Action("balle", Classes.empty(), uri, Optional.empty(), Optional.empty(), Optional.empty(), Collections.emptyList());
+        Action action1 = new Action("æksjen", empty(), uri, empty(), empty(), empty(), empty());
         assertEquals(action1, action);
     }
 
     @Test
     public void withFields() {
         Action action = Action.of("name", uri);
-        Action actionFields = action.withFields(Field.of("hello"), Field.of("world"));
-        Action actionFields2 = action.withFields(Arrays.asList(Field.of("hello"), Field.of("world")));
-        Action actionFields3 = action.addFields(Arrays.asList(Field.of("hello"), Field.of("world")));
-        Action actionFields4 = action.addFields(Field.of("hello"), Field.of("world"));
+        Action actionFields = action.fields(Fields.of(Field.of("hello"), Field.of("world")));
+        Action actionFields2 = action.fields(Fields.of(Field.of("hello"), Field.of("world")));
+        Action actionFields3 = action.fields(Fields.of(Field.of("hello"), Field.of("world")));
+        Action actionFields4 = action.fields(Fields.of(Field.of("hello"), Field.of("world")));
 
         assertNotSame(action, actionFields);
         assertNotSame(action, actionFields2);
@@ -46,14 +44,4 @@ public class ActionTest {
         assertEquals(actionFields2, actionFields4);
         assertEquals(actionFields3, actionFields4);
     }
-
-    @Test
-    public void replaceFields() {
-        Action actionFields = Action.of("name", uri, Arrays.asList(Field.of("hello"), Field.of("world")));
-        List<Field> replacement = Arrays.asList(Field.of("hello", "world"), Field.of("world", "of-hurt"));
-        Action replaced = actionFields.replace(replacement);
-        assertEquals(actionFields.fields.size(), replaced.fields.size());
-        assertEquals(Action.of("name", uri, replacement), replaced);
-    }
-
 }

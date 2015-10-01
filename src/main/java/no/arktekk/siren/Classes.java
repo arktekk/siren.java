@@ -3,37 +3,29 @@ package no.arktekk.siren;
 import no.arktekk.siren.util.StreamUtils;
 import no.arktekk.siren.util.StreamableIterable;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
+
+import static java.util.Arrays.asList;
+import static java.util.Collections.unmodifiableList;
 
 public final class Classes implements StreamableIterable<String> {
+
     private final List<String> classes;
 
-    public static Classes empty() {
-        return new Classes(Collections.emptyList());
-    }
-
     public Classes(Iterable<String> classes) {
-        this(StreamUtils.stream(classes).collect(Collectors.toList()));
+        this.classes = unmodifiableList(StreamUtils.stream(classes).collect(Collectors.toList()));
     }
 
-    Classes(List<String> classes) {
-        this.classes = Collections.unmodifiableList(classes);
+    public static Classes of(String clazz, String... classes) {
+        return new Classes(new ArrayList<String>() {{
+            add(clazz);
+            addAll(asList(classes));
+        }});
     }
 
-    public Classes add(String... clazz) {
-        return add(Arrays.asList(clazz));
-    }
-
-    public Classes add(Iterable<String> clazz) {
-        return new Classes(
-                Stream.concat(classes.stream(), StreamUtils.stream(clazz))
-                        .collect(Collectors.toList())
-        );
-    }
-
-    @Override
     public Iterator<String> iterator() {
         return classes.iterator();
     }

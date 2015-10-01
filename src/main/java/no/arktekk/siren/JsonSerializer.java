@@ -21,7 +21,7 @@ public interface JsonSerializer<T> {
 
         private JsonObjectBuilder sirenBuilder(Entity entity) {
             JsonObjectBuilder builder = Json.createObjectBuilder();
-            builder.add("class", FromIterableString.apply(entity.classes));
+            entity.classes.ifPresent(cs -> builder.add("class", FromIterableString.apply(cs)));
             entity.properties.ifPresent(ps -> builder.add("properties", ps));
             if (!entity.entities.isEmpty())
                 builder.add("entities", JsonFactory.arrayOf(entity.entities.stream().map(e -> e.toJson(this)).collect(Collectors.toList())));
@@ -36,22 +36,21 @@ public interface JsonSerializer<T> {
                 builder.add("actions", JsonFactory.arrayOf(entity.actions.stream().map(a -> {
                     JsonObjectBuilder action = Json.createObjectBuilder();
                     action.add("name", a.name);
-                    action.add("class", FromIterableString.apply(a.classes));
+                    a.classes.ifPresent(cs -> action.add("class", FromIterableString.apply(cs)));
                     a.method.ifPresent(m -> action.add("method", m.name()));
                     action.add("href", a.href.toString());  // TODO: denne skal sikker encodes
                     a.title.ifPresent(t -> action.add("title", t));
                     a.type.ifPresent(t -> action.add("type", t.format()));
-                    if (!a.fields.isEmpty())
-                        action.add("fields", JsonFactory.arrayOf(a.fields.stream().map(f -> {
+                    a.fields.ifPresent(fs ->
+                        action.add("fields", JsonFactory.arrayOf(fs.stream().map(f -> {
                             JsonObjectBuilder field = Json.createObjectBuilder();
                             field.add("name", f.name);
-                            if (!f.classes.isEmpty())
-                                field.add("class", FromIterableString.apply(f.classes));
+                            f.classes.ifPresent(cs -> field.add("class", FromIterableString.apply(cs)));
                             field.add("type", f.type.value);
                             f.value.ifPresent(v -> field.add("value", v));
                             f.title.ifPresent(t -> field.add("title", t));
                             return field.build();
-                        }).collect(Collectors.toList())));
+                        }).collect(Collectors.toList()))));
                     return action.build();
                 }).collect(Collectors.toList())));
             entity.title.ifPresent(t -> builder.add("title", t));
@@ -68,7 +67,7 @@ public interface JsonSerializer<T> {
 
         public JsonValue serialize(EmbeddedLink embeddedLink) {
             JsonObjectBuilder object = Json.createObjectBuilder();
-            object.add("class", FromIterableString.apply(embeddedLink.classes));
+            embeddedLink.classes.ifPresent(cs -> object.add("class", FromIterableString.apply(cs)));
             object.add("rel", FromIterableString.apply(embeddedLink.rel));
             object.add("href", embeddedLink.href.toString()); // TODO: denne skal sikkert encodes
             embeddedLink.title.ifPresent(t -> object.add("title", t));

@@ -3,20 +3,38 @@ package no.arktekk.siren;
 import java.net.URI;
 import java.util.Optional;
 
+import static java.util.Optional.empty;
+
 public final class Link {
 
-    public final Classes classes;
+    public final Optional<Classes> classes;
     public final Relations rel;
     public final URI href;
     public final Optional<MIMEType> type;
     public final Optional<String> title;
 
-    public Link(Classes classes, Relations rel, URI href, Optional<MIMEType> type, Optional<String> title) {
+    public Link(Optional<Classes> classes, Relations rel, URI href, Optional<MIMEType> type, Optional<String> title) {
         this.classes = classes;
         this.rel = rel;
         this.href = href;
         this.type = type;
         this.title = title;
+    }
+
+    public static Link of(Relations rel, URI href) {
+        return new Link(empty(), rel, href, empty(), empty());
+    }
+
+    public Link classes(Classes classes) {
+        return new Link(Optional.of(classes), rel, href, type, title);
+    }
+
+    public Link type(MIMEType type) {
+        return new Link(classes, rel, href, Optional.of(type), title);
+    }
+
+    public Link title(String title) {
+        return new Link(classes, rel, href, type, Optional.of(title));
     }
 
     @Override

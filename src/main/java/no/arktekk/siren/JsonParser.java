@@ -20,12 +20,12 @@ public interface JsonParser<T> {
         }
 
         private Entity parseEntity(JsonObject object) {
-            Classes clazz = new Classes(arrayToStringList(arrayOrEmpty(object, "class")));
+            Optional<Classes> classes = orEmpty(object, "class").map(cs -> new Classes(arrayToStringList(cs)));
             Optional<JsonObject> properties = Optional.ofNullable(object.getJsonObject("properties"));
             List<SubEntity> entities = mapObjectList(arrayOrEmpty(object, "entities"), this::parseSubEntity);
             List<Action> actions = mapObjectList(arrayOrEmpty(object, "actions"), this::parseAction);
             List<Link> links = mapObjectList(arrayOrEmpty(object, "links"), this::parseLink);
-            return new Entity(clazz, properties, entities, actions, links, parseTitle(object));
+            return new Entity(classes, properties, entities, actions, links, parseTitle(object));
         }
 
         private Optional<String> parseTitle(JsonObject object) {
@@ -46,8 +46,8 @@ public interface JsonParser<T> {
                 throw new SirenParseException(String.format("Empty 'rel' in Link '%s'", obj));
             }
             Optional<MIMEType> type = get(obj, "type").flatMap(MIMEType::parse);
-            Classes clazz = new Classes(arrayToStringList(arrayOrEmpty(obj, "class")));
-            return new Link(clazz, rels, href, type, parseTitle(obj));
+            Optional<Classes> classes = orEmpty(obj, "class").map(cs -> new Classes(arrayToStringList(cs)));
+            return new Link(classes, rels, href, type, parseTitle(obj));
         }
 
         private Action parseAction(JsonObject action) {
@@ -58,11 +58,9 @@ public interface JsonParser<T> {
             URI href = getHref(action, "Action");
             Optional<Method> method = get(action, "method").map(Method::valueOf);
             Optional<MIMEType> type = get(action, "type").flatMap(MIMEType::parse);
-
-            List<Field> fields = mapObjectList(arrayOrEmpty(action, "fields"), this::parseField);
-
-            Classes clazz = new Classes(arrayToStringList(arrayOrEmpty(action, "class")));
-            return new Action(name, clazz, href, get(action, "title"), method, type, fields);
+            Optional<Fields> fields = orEmpty(action, "fields").map(fs -> new Fields(mapObjectList(fs, this::parseField)));
+            Optional<Classes> classes = orEmpty(action, "class").map(cs -> new Classes(arrayToStringList(cs)));
+            return new Action(name, classes, href, get(action, "title"), method, type, fields);
         }
 
         private SubEntity parseSubEntity(JsonObject entity) {
@@ -73,7 +71,8 @@ public interface JsonParser<T> {
         }
 
         private EmbeddedLink parseEmbeddedLink(JsonObject embeddedLink) {
-            return new EmbeddedLink(parseLink(embeddedLink));
+            Link link = parseLink(embeddedLink);
+            return new EmbeddedLink(link.classes, link.rel, link.href, link.type, link.title);
         }
 
         private EmbeddedRepresentation parseEmbeddedRepresentation(JsonObject embeddedRepresentation) {
@@ -87,10 +86,10 @@ public interface JsonParser<T> {
             if (name == null) {
                 throw new SirenParseException(String.format("Missing required 'name' field in Field '%s", field));
             }
-            Classes clazz = new Classes(arrayToStringList(arrayOrEmpty(field, "class")));
+            Optional<Classes> classes = orEmpty(field, "class").map(cs -> new Classes(arrayToStringList(cs)));
             Field.Type type = Field.Type.fromString(field.getString("type", "text"));
 
-            return new Field(name, clazz, type, Optional.ofNullable(field.get("value")), get(field, "title"));
+            return new Field(name, classes, type, Optional.ofNullable(field.get("value")), get(field, "title"));
         }
 
         private URI getHref(JsonObject obj, String name) {
@@ -108,6 +107,10 @@ public interface JsonParser<T> {
 
         private JsonArray arrayOrEmpty(JsonObject object, String name) {
             return Optional.ofNullable(object.getJsonArray(name)).orElse(Json.createArrayBuilder().build());
+        }
+
+        private Optional<JsonArray> orEmpty(JsonObject object, String name) {
+            return Optional.ofNullable(object.getJsonArray(name));
         }
 
         private List<String> arrayToStringList(JsonArray classes) {

@@ -1,13 +1,15 @@
 package no.arktekk.siren.field;
 
 import no.arktekk.siren.Field;
+import no.arktekk.siren.Fields;
 import no.arktekk.siren.MIMEType;
 
-import javax.json.*;
+import javax.json.JsonNumber;
+import javax.json.JsonString;
+import javax.json.JsonValue;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.nio.charset.UnsupportedCharsetException;
-import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -17,12 +19,8 @@ public final class WWWUrlEncodedFieldSerializer implements FieldSerializer {
     private WWWUrlEncodedFieldSerializer() {
     }
 
-    @Override
-    public Optional<String> serialize(MIMEType mimeType, List<Field> fields) {
-        if (MIMEType.URLEncoded.includedBy(mimeType)) {
-            return Optional.of(fields.stream().map(this::format).collect(Collectors.joining("&")));
-        }
-        return Optional.empty();
+    public Optional<String> serialize(MIMEType mimeType, Optional<Fields> fields) {
+        return fields.filter(f -> MIMEType.URLEncoded.includedBy(mimeType)).map(fs -> fs.stream().map(this::format).collect(Collectors.joining("&")));
     }
 
     private String format(Field f) {

@@ -1,37 +1,18 @@
 package no.arktekk.siren;
 
-import org.glassfish.json.JsonFactory;
-
 import javax.json.JsonValue;
 import java.util.Optional;
 
+import static java.util.Optional.empty;
+
 public final class Field {
     public final String name;
-    public final Classes classes;
     public final Type type;
-    public final Optional<JsonValue> value;
+    public final Optional<Classes> classes;
+    public final Optional<JsonValue> value; // TODO: Få vekk JsonValue
     public final Optional<String> title;
 
-    public static Field of(String name) {
-        return new Field(name, Classes.empty(), Type.TEXT, Optional.empty(), Optional.empty());
-    }
-
-    public static Field of(String name, String value) {
-        return new Field(name, Classes.empty(), Type.TEXT, Optional.of(value).map(JsonFactory::jsonString), Optional.empty());
-    }
-    public static Field of(String name, JsonValue value) {
-        return new Field(name, Classes.empty(), Type.TEXT, Optional.of(value), Optional.empty());
-    }
-
-    public static Field of(String name, Type type, JsonValue value) {
-        return new Field(name, Classes.empty(), type, Optional.of(value), Optional.empty());
-    }
-
-    public static Field of(String name, Type type) {
-        return new Field (name, Classes.empty(), type, Optional.empty(), Optional.empty());
-    }
-
-    public Field(String name, Classes classes, Type type, Optional<JsonValue> value, Optional<String> title) {
+    public Field(String name, Optional<Classes> classes, Type type, Optional<JsonValue> value, Optional<String> title) {
         this.name = name;
         this.classes = classes;
         this.type = type;
@@ -39,44 +20,24 @@ public final class Field {
         this.title = title;
     }
 
-    public String getName() {
-        return name;
+    public static Field of(String name) {
+        return new Field(name, empty(), Type.TEXT, empty(), empty());
     }
 
-    public Classes getClasses() {
-        return classes;
+    public static Field of(String name, Type type) {
+        return new Field(name, empty(), type, empty(), empty());
     }
 
-    public Type getType() {
-        return type;
+    public Field classes(Classes classes) {
+        return new Field(name, Optional.of(classes), type, value, title);
     }
 
-    public Optional<JsonValue> getValue() {
-        return value;
-    }
-
-    public Optional<String> getTitle() {
-        return title;
-    }
-
-    public Field withClasses(Classes classes) {
-        return new Field(name, classes, type, value, title);
-    }
-
-    public Field withValue(JsonValue value) {
+    public Field value(JsonValue value) { // TODO: Få vekk JsonValue
         return new Field(name, classes, type, Optional.of(value), title);
     }
 
-    public Field noValue() {
-        return new Field(name, classes, type, Optional.empty(), title);
-    }
-
-    public Field withTitle(String title) {
+    public Field title(String title) {
         return new Field(name, classes, type, value, Optional.of(title));
-    }
-
-    public Field noTitle() {
-        return new Field(name, classes, type, value, Optional.empty());
     }
 
     @Override
@@ -104,7 +65,7 @@ public final class Field {
         return result;
     }
 
-    enum Type {
+    public enum Type {
         HIDDEN("hidden"),
         TEXT("text"),
         SEARCH("search"),

@@ -3,15 +3,17 @@ package no.arktekk.siren;
 import java.net.URI;
 import java.util.Optional;
 
+import static java.util.Optional.empty;
+
 public final class EmbeddedLink implements SubEntity {
 
-    public final Classes classes;
+    public final Optional<Classes> classes;
     public final Relations rel;
     public final URI href;
     public final Optional<MIMEType> type;
     public final Optional<String> title;
 
-    public EmbeddedLink(Classes classes, Relations rel, URI href, Optional<MIMEType> type, Optional<String> title) {
+    public EmbeddedLink(Optional<Classes> classes, Relations rel, URI href, Optional<MIMEType> type, Optional<String> title) {
         this.classes = classes;
         this.rel = rel;
         this.href = href;
@@ -19,12 +21,22 @@ public final class EmbeddedLink implements SubEntity {
         this.title = title;
     }
 
-    public EmbeddedLink(Link link) {
-        this(link.classes, link.rel, link.href, link.type, link.title);
+    public static EmbeddedLink of(Relations rel, URI href) {
+        return new EmbeddedLink(empty(), rel, href, empty(), empty());
     }
 
-    public Relations getRel() {
-        return rel;
+
+
+    public EmbeddedLink classes(Classes classes) {
+        return new EmbeddedLink(Optional.of(classes), rel, href, type, title);
+    }
+
+    public EmbeddedLink type(MIMEType type) {
+        return new EmbeddedLink(classes, rel, href, Optional.of(type), title);
+    }
+
+    public EmbeddedLink title(String title) {
+        return new EmbeddedLink(classes, rel, href, type, Optional.of(title));
     }
 
     public <T> T toJson(JsonSerializer<T> serializer) {
