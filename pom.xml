@@ -20,7 +20,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>no.arktekk</groupId>
   <artifactId>siren-java</artifactId>
-  <version>0.1-SNAPSHOT</version>
+  <version>0.1</version>
   <packaging>jar</packaging>
   <name>Siren</name>
   <url>https://github.com/arktekk/siren.java</url>
@@ -31,7 +31,7 @@
     <url>https://github.com/arktekk/siren.java</url>
     <connection>scm:git:https://arktekk@github.com/arktekk/siren.java.git</connection>
     <developerConnection>scm:git:git@github.com:arktekk/siren.java.git</developerConnection>
-    <tag>HEAD</tag>
+    <tag>v0.1</tag>
   </scm>
 
   <issueManagement>
