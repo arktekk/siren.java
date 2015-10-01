@@ -25,6 +25,7 @@
   <name>Siren</name>
   <url>https://github.com/arktekk/siren.java</url>
   <inceptionYear>2015</inceptionYear>
+  <description>Java implementation of Siren; a hypermedia specification for representing entitites</description>
 
   <scm>
     <url>https://github.com/arktekk/siren.java</url>
