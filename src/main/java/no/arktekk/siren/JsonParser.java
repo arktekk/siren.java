@@ -1,7 +1,13 @@
 package no.arktekk.siren;
 
 
-import javax.json.*;
+import no.arktekk.siren.SubEntity.EmbeddedLink;
+import no.arktekk.siren.SubEntity.EmbeddedRepresentation;
+
+import javax.json.JsonArray;
+import javax.json.JsonObject;
+import javax.json.JsonString;
+import javax.json.JsonValue;
 import java.net.URI;
 import java.util.List;
 import java.util.Optional;
@@ -22,9 +28,9 @@ public interface JsonParser<T> {
         private Entity parseEntity(JsonObject object) {
             Optional<Classes> classes = orEmpty(object, "class").map(cs -> new Classes(arrayToStringList(cs)));
             Optional<JsonObject> properties = Optional.ofNullable(object.getJsonObject("properties"));
-            List<SubEntity> entities = mapObjectList(arrayOrEmpty(object, "entities"), this::parseSubEntity);
-            List<Action> actions = mapObjectList(arrayOrEmpty(object, "actions"), this::parseAction);
-            List<Link> links = mapObjectList(arrayOrEmpty(object, "links"), this::parseLink);
+            Optional<Entities> entities = orEmpty(object, "entities").map(es -> new Entities(mapObjectList(es, this::parseSubEntity)));
+            Optional<Actions> actions = orEmpty(object, "actions").map(as -> new Actions(mapObjectList(as, this::parseAction)));
+            Optional<Links> links = orEmpty(object, "links").map(ls -> new Links(mapObjectList(ls, this::parseLink)));
             return new Entity(classes, properties, entities, actions, links, parseTitle(object));
         }
 
@@ -41,13 +47,13 @@ public interface JsonParser<T> {
 
         private Link parseLink(JsonObject obj) {
             URI href = getHref(obj, "Link");
-            Relations rels = new Relations(arrayToStringList(obj.getJsonArray("rel")));
+            Rel rels = new Rel(arrayToStringList(obj.getJsonArray("rel")));
             if (rels.isEmpty()) {
                 throw new SirenParseException(String.format("Empty 'rel' in Link '%s'", obj));
             }
             Optional<MIMEType> type = get(obj, "type").flatMap(MIMEType::parse);
             Optional<Classes> classes = orEmpty(obj, "class").map(cs -> new Classes(arrayToStringList(cs)));
-            return new Link(classes, rels, href, type, parseTitle(obj));
+            return new Link(rels, href, classes, type, parseTitle(obj));
         }
 
         private Action parseAction(JsonObject action) {
@@ -60,7 +66,7 @@ public interface JsonParser<T> {
             Optional<MIMEType> type = get(action, "type").flatMap(MIMEType::parse);
             Optional<Fields> fields = orEmpty(action, "fields").map(fs -> new Fields(mapObjectList(fs, this::parseField)));
             Optional<Classes> classes = orEmpty(action, "class").map(cs -> new Classes(arrayToStringList(cs)));
-            return new Action(name, classes, href, get(action, "title"), method, type, fields);
+            return new Action(name, href, classes, get(action, "title"), method, type, fields);
         }
 
         private SubEntity parseSubEntity(JsonObject entity) {
@@ -72,12 +78,12 @@ public interface JsonParser<T> {
 
         private EmbeddedLink parseEmbeddedLink(JsonObject embeddedLink) {
             Link link = parseLink(embeddedLink);
-            return new EmbeddedLink(link.classes, link.rel, link.href, link.type, link.title);
+            return new EmbeddedLink(link.rel, link.href, link.classes, link.type, link.title);
         }
 
         private EmbeddedRepresentation parseEmbeddedRepresentation(JsonObject embeddedRepresentation) {
             Entity entity = parseEntity(embeddedRepresentation);
-            Relations rel = new Relations(arrayToStringList(embeddedRepresentation.getJsonArray("rel")));
+            Rel rel = new Rel(arrayToStringList(embeddedRepresentation.getJsonArray("rel")));
             return new EmbeddedRepresentation(rel, entity);
         }
 
@@ -89,7 +95,7 @@ public interface JsonParser<T> {
             Optional<Classes> classes = orEmpty(field, "class").map(cs -> new Classes(arrayToStringList(cs)));
             Field.Type type = Field.Type.fromString(field.getString("type", "text"));
 
-            return new Field(name, classes, type, Optional.ofNullable(field.get("value")), get(field, "title"));
+            return new Field(name, type, classes, Optional.ofNullable(field.get("value")), get(field, "title"));
         }
 
         private URI getHref(JsonObject obj, String name) {
@@ -100,13 +106,8 @@ public interface JsonParser<T> {
             return URI.create(hrefString);
         }
 
-
         private <A> List<A> mapObjectList(JsonArray list, Function<JsonObject, A> f) {
             return arrayToObjectStream(list).map(f).collect(Collectors.toList());
-        }
-
-        private JsonArray arrayOrEmpty(JsonObject object, String name) {
-            return Optional.ofNullable(object.getJsonArray(name)).orElse(Json.createArrayBuilder().build());
         }
 
         private Optional<JsonArray> orEmpty(JsonObject object, String name) {

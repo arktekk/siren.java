@@ -1,21 +1,19 @@
 package no.arktekk.siren;
 
 import javax.json.JsonObject;
-import java.util.List;
 import java.util.Optional;
 
-import static java.util.Collections.emptyList;
 import static java.util.Optional.empty;
 
 public final class Entity implements JsonSerializable {
     public final Optional<Classes> classes;
     public final Optional<JsonObject> properties;
-    public final List<SubEntity> entities;
-    public final List<Action> actions;
-    public final List<Link> links;
+    public final Optional<Entities> entities;
+    public final Optional<Actions> actions;
+    public final Optional<Links> links;
     public final Optional<String> title;
 
-    public Entity(Optional<Classes> classes, Optional<JsonObject> properties, List<SubEntity> entities, List<Action> actions, List<Link> links, Optional<String> title) {
+    public Entity(Optional<Classes> classes, Optional<JsonObject> properties, Optional<Entities> entities, Optional<Actions> actions, Optional<Links> links, Optional<String> title) {
         this.classes = classes;
         this.properties = properties;
         this.entities = entities;
@@ -25,30 +23,30 @@ public final class Entity implements JsonSerializable {
     }
 
     public static Entity of() {
-        return new Entity(empty(), empty(), emptyList(), emptyList(), emptyList(), empty());
+        return new Entity(empty(), empty(), empty(), empty(), empty(), empty());
     }
 
-    public Entity classes(Classes classes) {
+    public Entity with(Classes classes) {
         return new Entity(Optional.of(classes), properties, entities, actions, links, title);
     }
 
-    public Entity properties(JsonObject properties) { // TODO Få vekk JsonObject
+    public Entity with(JsonObject properties) { // TODO Få vekk JsonObject
         return new Entity(classes, Optional.of(properties), entities, actions, links, title);
     }
 
-    public Entity entities(List<SubEntity> entities) {
-        return new Entity(classes, properties, entities, actions, links, title);
+    public Entity with(Entities entities) {
+        return new Entity(classes, properties, Optional.of(entities), actions, links, title);
     }
 
-    public Entity actions(List<Action> actions) {
-        return new Entity(classes, properties, entities, actions, links, title);
+    public Entity with(Actions actions) {
+        return new Entity(classes, properties, entities, Optional.of(actions), links, title);
     }
 
-    public Entity links(List<Link> links) {
-        return new Entity(classes, properties, entities, actions, links, title);
+    public Entity with(Links links) {
+        return new Entity(classes, properties, entities, actions, Optional.of(links), title);
     }
 
-    public Entity title(String title) {
+    public Entity with(String title) {
         return new Entity(classes, properties, entities, actions, links, Optional.of(title));
     }
 

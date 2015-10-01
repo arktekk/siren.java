@@ -13,7 +13,7 @@ public class FieldTest {
 
     @Test
     public void construct() {
-        Field field = Field.of("foo").value(JsonFactory.jsonString("bar"));
+        Field field = Field.of("foo").with(JsonFactory.jsonString("bar"));
         assertEquals(field.name, "foo");
         assertEquals(field.value, Optional.of(JsonFactory.jsonString("bar")));
         assertEquals(field.classes, empty());

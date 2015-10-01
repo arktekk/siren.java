@@ -11,17 +11,17 @@ import static java.util.Optional.empty;
 
 public final class Action {
     public final String name;
-    public final Optional<Classes> classes;
     public final URI href;
+    public final Optional<Classes> classes;
     public final Optional<String> title;
     public final Optional<Method> method;
     public final Optional<MIMEType> type;
     public final Optional<Fields> fields;
 
-    public Action(String name, Optional<Classes> classes, URI href, Optional<String> title, Optional<Method> method, Optional<MIMEType> type, Optional<Fields> fields) {
+    public Action(String name, URI href, Optional<Classes> classes, Optional<String> title, Optional<Method> method, Optional<MIMEType> type, Optional<Fields> fields) {
         this.name = Objects.requireNonNull(name, "name may not be null");
-        this.classes = classes;
         this.href = Objects.requireNonNull(href, "href may not be null");
+        this.classes = classes;
         this.title = title;
         this.method = method;
         this.type = type;
@@ -29,27 +29,27 @@ public final class Action {
     }
 
     public static Action of(String name, URI href) {
-        return new Action(name, empty(), href, empty(), empty(), empty(), empty());
+        return new Action(name, href, empty(), empty(), empty(), empty(), empty());
     }
 
-    public Action classes(Classes classes) {
-        return new Action(name, Optional.of(classes), href, title, method, type, fields);
+    public Action with(Classes classes) {
+        return new Action(name, href, Optional.of(classes), title, method, type, fields);
     }
 
-    public Action title(String title) {
-        return new Action(name, classes, href, Optional.of(title), method, type, fields);
+    public Action with(String title) {
+        return new Action(name, href, classes, Optional.of(title), method, type, fields);
     }
 
-    public Action method(Method method) {
-        return new Action(name, classes, href, title, Optional.of(method), type, fields);
+    public Action with(Method method) {
+        return new Action(name, href, classes, title, Optional.of(method), type, fields);
     }
 
-    public Action type(MIMEType type) {
-        return new Action(name, classes, href, title, method, Optional.of(type), fields);
+    public Action with(MIMEType type) {
+        return new Action(name, href, classes, title, method, Optional.of(type), fields);
     }
 
-    public Action fields(Fields fields) { // TODO: Ha denne lik Fields.of? Da slipper man å eksplisitt jobbe med Fields. Kanskje forvirrende
-        return new Action(name, classes, href, title, method, type, Optional.of(fields));
+    public Action with(Fields fields) { // TODO: Ha denne lik Fields.of? Da slipper man å eksplisitt jobbe med Fields. Kanskje forvirrende
+        return new Action(name, href, classes, title, method, type, Optional.of(fields));
     }
 
     public Optional<String> format(FieldSerializer serializer) {

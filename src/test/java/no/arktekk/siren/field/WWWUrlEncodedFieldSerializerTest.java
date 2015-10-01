@@ -18,7 +18,7 @@ public class WWWUrlEncodedFieldSerializerTest {
     public void testSerialize() {
         Optional<Fields> fields = Optional.of(Fields.of(
                 Field.of("field-1"),
-                Field.of("href", Type.URL).value(JsonFactory.jsonString("http://www.example.com/meh?hello=hei&hei=jsdf"))
+                Field.of("href", Type.URL).with(JsonFactory.jsonString("http://www.example.com/meh?hello=hei&hei=jsdf"))
         ));
 
         assertTrue("URLEncoded didnt match null", serializer.serialize(null, fields).isPresent());

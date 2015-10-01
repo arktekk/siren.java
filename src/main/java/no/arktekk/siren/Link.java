@@ -7,34 +7,34 @@ import static java.util.Optional.empty;
 
 public final class Link {
 
-    public final Optional<Classes> classes;
-    public final Relations rel;
+    public final Rel rel;
     public final URI href;
+    public final Optional<Classes> classes;
     public final Optional<MIMEType> type;
     public final Optional<String> title;
 
-    public Link(Optional<Classes> classes, Relations rel, URI href, Optional<MIMEType> type, Optional<String> title) {
-        this.classes = classes;
+    public Link(Rel rel, URI href, Optional<Classes> classes, Optional<MIMEType> type, Optional<String> title) {
         this.rel = rel;
         this.href = href;
+        this.classes = classes;
         this.type = type;
         this.title = title;
     }
 
-    public static Link of(Relations rel, URI href) {
-        return new Link(empty(), rel, href, empty(), empty());
+    public static Link of(Rel rel, URI href) {
+        return new Link(rel, href, empty(), empty(), empty());
     }
 
-    public Link classes(Classes classes) {
-        return new Link(Optional.of(classes), rel, href, type, title);
+    public Link with(Classes classes) {
+        return new Link(rel, href, Optional.of(classes), type, title);
     }
 
-    public Link type(MIMEType type) {
-        return new Link(classes, rel, href, Optional.of(type), title);
+    public Link with(MIMEType type) {
+        return new Link(rel, href, classes, Optional.of(type), title);
     }
 
-    public Link title(String title) {
-        return new Link(classes, rel, href, type, Optional.of(title));
+    public Link with(String title) {
+        return new Link(rel, href, classes, type, Optional.of(title));
     }
 
     @Override

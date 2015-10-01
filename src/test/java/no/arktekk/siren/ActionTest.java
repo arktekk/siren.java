@@ -21,17 +21,17 @@ public class ActionTest {
         assertEquals(empty(), action.type);
         assertEquals(empty(), action.fields);
 
-        Action action1 = new Action("æksjen", empty(), uri, empty(), empty(), empty(), empty());
+        Action action1 = new Action("æksjen", uri, empty(), empty(), empty(), empty(), empty());
         assertEquals(action1, action);
     }
 
     @Test
     public void withFields() {
         Action action = Action.of("name", uri);
-        Action actionFields = action.fields(Fields.of(Field.of("hello"), Field.of("world")));
-        Action actionFields2 = action.fields(Fields.of(Field.of("hello"), Field.of("world")));
-        Action actionFields3 = action.fields(Fields.of(Field.of("hello"), Field.of("world")));
-        Action actionFields4 = action.fields(Fields.of(Field.of("hello"), Field.of("world")));
+        Action actionFields = action.with(Fields.of(Field.of("hello"), Field.of("world")));
+        Action actionFields2 = action.with(Fields.of(Field.of("hello"), Field.of("world")));
+        Action actionFields3 = action.with(Fields.of(Field.of("hello"), Field.of("world")));
+        Action actionFields4 = action.with(Fields.of(Field.of("hello"), Field.of("world")));
 
         assertNotSame(action, actionFields);
         assertNotSame(action, actionFields2);

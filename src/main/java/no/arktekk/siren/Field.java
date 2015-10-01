@@ -12,32 +12,32 @@ public final class Field {
     public final Optional<JsonValue> value; // TODO: Få vekk JsonValue
     public final Optional<String> title;
 
-    public Field(String name, Optional<Classes> classes, Type type, Optional<JsonValue> value, Optional<String> title) {
+    public Field(String name, Type type, Optional<Classes> classes, Optional<JsonValue> value, Optional<String> title) {
         this.name = name;
-        this.classes = classes;
         this.type = type;
+        this.classes = classes;
         this.value = value;
         this.title = title;
     }
 
     public static Field of(String name) {
-        return new Field(name, empty(), Type.TEXT, empty(), empty());
+        return new Field(name, Type.TEXT, empty(), empty(), empty());
     }
 
     public static Field of(String name, Type type) {
-        return new Field(name, empty(), type, empty(), empty());
+        return new Field(name, type, empty(), empty(), empty());
     }
 
-    public Field classes(Classes classes) {
-        return new Field(name, Optional.of(classes), type, value, title);
+    public Field with(Classes classes) {
+        return new Field(name, type, Optional.of(classes), value, title);
     }
 
-    public Field value(JsonValue value) { // TODO: Få vekk JsonValue
-        return new Field(name, classes, type, Optional.of(value), title);
+    public Field with(JsonValue value) { // TODO: Få vekk JsonValue
+        return new Field(name, type, classes, Optional.of(value), title);
     }
 
-    public Field title(String title) {
-        return new Field(name, classes, type, value, Optional.of(title));
+    public Field with(String title) {
+        return new Field(name, type, classes, value, Optional.of(title));
     }
 
     @Override
