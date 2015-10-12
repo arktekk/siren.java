@@ -22,17 +22,14 @@ public interface JsonParser<T> {
         }
 
         private Entity parseEntity(Json.JObject object) {
-            Optional<Classes> classes = getAsJsonArray(object, "class").map(l -> new Classes(l.getListAsStrings()));
-            Optional<Json.JObject> properties = object.getAs("properties", Json.JValue::asJsonObject);
-            Optional<Entities> entities = getAsJsonArray(object, "entities").map(es -> new Entities(mapObjectList(es, this::parseSubEntity)));
-            Optional<Actions> actions = getAsJsonArray(object, "actions").map(as -> new Actions(mapObjectList(as, this::parseAction)));
-            Optional<Links> links = getAsJsonArray(object, "links").map(ls -> new Links(mapObjectList(ls, this::parseLink)));
+            Optional<Classes> classes = object.getAsArray("class").map(l -> new Classes(l.getListAsStrings()));
+            Optional<Json.JObject> properties = object.getAsObject("properties");
+            Optional<Entities> entities = object.getAsArray("entities").map(es -> new Entities(mapObjectList(es, this::parseSubEntity)));
+            Optional<Actions> actions = object.getAsArray("actions").map(as -> new Actions(mapObjectList(as, this::parseAction)));
+            Optional<Links> links = object.getAsArray("links").map(ls -> new Links(mapObjectList(ls, this::parseLink)));
             return new Entity(classes, properties, entities, actions, links, parseTitle(object));
         }
 
-        private Optional<Json.JArray> getAsJsonArray(Json.JObject object, String actions) {
-            return object.getAs(actions, Json.JValue::asJsonArray);
-        }
 
         private Optional<String> parseTitle(Json.JObject object) {
             return object.getAsString("title");
@@ -40,12 +37,12 @@ public interface JsonParser<T> {
 
         private Link parseLink(Json.JObject obj) {
             URI href = getHref(obj, "Link");
-            Rel rels = new Rel(getAsJsonArray(obj, "rel").orElse(Json.jEmptyArray()).getListAsStrings());
+            Rel rels = new Rel(obj.getAsArrayOrEmpty("rel").getListAsStrings());
             if (rels.isEmpty()) {
                 throw new SirenParseException(String.format("Empty 'rel' in Link '%s'", obj));
             }
             Optional<MIMEType> type = obj.getAsString("type").flatMap(MIMEType::parse);
-            Optional<Classes> classes = getAsJsonArray(obj, "class").map(cs -> new Classes(cs.getListAsStrings()));
+            Optional<Classes> classes = obj.getAsArray("class").map(cs -> new Classes(cs.getListAsStrings()));
             return new Link(rels, href, classes, type, parseTitle(obj));
         }
 
@@ -57,8 +54,8 @@ public interface JsonParser<T> {
             URI href = getHref(action, "Action");
             Optional<Method> method = action.getAsString("method").map(Method::valueOf);
             Optional<MIMEType> type = action.getAsString("type").flatMap(MIMEType::parse);
-            Optional<Fields> fields = getAsJsonArray(action, "fields").map(fs -> new Fields(mapObjectList(fs, this::parseField)));
-            Optional<Classes> classes = getAsJsonArray(action, "class").map(cs -> new Classes(cs.getListAsStrings()));
+            Optional<Fields> fields = action.getAsArray("fields").map(fs -> new Fields(mapObjectList(fs, this::parseField)));
+            Optional<Classes> classes = action.getAsArray("class").map(cs -> new Classes(cs.getListAsStrings()));
             return new Action(name.get(), href, classes, parseTitle(action), method, type, fields);
         }
 
@@ -76,7 +73,7 @@ public interface JsonParser<T> {
 
         private EmbeddedRepresentation parseEmbeddedRepresentation(Json.JObject embeddedRepresentation) {
             Entity entity = parseEntity(embeddedRepresentation);
-            Rel rel = new Rel(getAsJsonArray(embeddedRepresentation, "rel").orElse(Json.jEmptyArray()).getListAsStrings());
+            Rel rel = new Rel(embeddedRepresentation.getAsArrayOrEmpty("rel").getListAsStrings());
             return new EmbeddedRepresentation(rel, entity);
         }
 
@@ -85,7 +82,7 @@ public interface JsonParser<T> {
             if (!name.isPresent()) {
                 throw new SirenParseException(String.format("Missing required 'name' field in Field '%s", field));
             }
-            Optional<Classes> classes = getAsJsonArray(field, "class").map(cs -> new Classes(cs.getListAsStrings()));
+            Optional<Classes> classes = field.getAsArray("class").map(cs -> new Classes(cs.getListAsStrings()));
             Field.Type type = Field.Type.fromString(field.getAsString("type").orElse("text"));
 
             return new Field(name.get(), type, classes, field.get("value"), parseTitle(field));
