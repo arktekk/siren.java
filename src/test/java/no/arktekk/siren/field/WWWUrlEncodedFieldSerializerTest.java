@@ -1,10 +1,10 @@
 package no.arktekk.siren.field;
 
+import net.hamnaberg.json.Json;
 import no.arktekk.siren.Field;
 import no.arktekk.siren.Field.Type;
 import no.arktekk.siren.Fields;
 import no.arktekk.siren.MIMEType;
-import org.glassfish.json.JsonFactory;
 import org.junit.Test;
 
 import java.util.Optional;
@@ -18,7 +18,7 @@ public class WWWUrlEncodedFieldSerializerTest {
     public void testSerialize() {
         Optional<Fields> fields = Optional.of(Fields.of(
                 Field.of("field-1"),
-                Field.of("href", Type.URL).with(JsonFactory.jsonString("http://www.example.com/meh?hello=hei&hei=jsdf"))
+                Field.of("href", Type.URL).with(Json.jString("http://www.example.com/meh?hello=hei&hei=jsdf"))
         ));
 
         assertTrue("URLEncoded didnt match null", serializer.serialize(null, fields).isPresent());

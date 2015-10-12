@@ -1,12 +1,10 @@
 package no.arktekk.siren.field;
 
+import net.hamnaberg.json.Json;
 import no.arktekk.siren.Field;
 import no.arktekk.siren.Fields;
 import no.arktekk.siren.MIMEType;
 
-import javax.json.JsonNumber;
-import javax.json.JsonString;
-import javax.json.JsonValue;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.nio.charset.UnsupportedCharsetException;
@@ -27,23 +25,19 @@ public final class WWWUrlEncodedFieldSerializer implements FieldSerializer {
         return String.format("%s=%s", encode(f.name), encode(f.value.map(this::toString).orElse("")));
     }
 
-    private String toString(JsonValue jv) {
-        switch (jv.getValueType()) {
-            case ARRAY:
-                throw new IllegalArgumentException("We do not support json arrays");
-            case OBJECT:
-                throw new IllegalArgumentException("We do not support json objects");
-            case STRING:
-                return ((JsonString)jv).getString();
-            case NUMBER:
-                return ((JsonNumber)jv).bigDecimalValue().toString();
-            case TRUE:
-                return "true";
-            case FALSE:
-                return "false";
-            default:
-                return "";
-        }
+    private String toString(Json.JValue jv) {
+        return jv.fold(
+                Json.JString::getValue,
+                j -> String.valueOf(j.isValue()),
+                j -> j.value.toString(),
+                ignore -> {
+                    throw new IllegalArgumentException("We do not support json objects");
+                },
+                ignore -> {
+                    throw new IllegalArgumentException("We do not support json arrays");
+                },
+                () -> ""
+                );
     }
 
     private String encode(String s) {

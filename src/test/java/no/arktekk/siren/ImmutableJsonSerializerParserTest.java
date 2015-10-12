@@ -1,12 +1,14 @@
 package no.arktekk.siren;
 
+import net.hamnaberg.json.Json;
+import net.hamnaberg.json.io.JacksonStreamingSerializer;
 import no.arktekk.siren.SubEntity.EmbeddedLink;
 import no.arktekk.siren.SubEntity.EmbeddedRepresentation;
 import org.junit.Test;
 
-import javax.json.Json;
-import javax.json.JsonValue;
 import java.net.URI;
+import java.util.AbstractMap;
+import java.util.Map;
 import java.util.Optional;
 
 import static java.util.Collections.singletonList;
@@ -16,13 +18,14 @@ import static no.arktekk.siren.MIMEType.URLEncoded;
 import static no.arktekk.siren.Method.POST;
 import static org.junit.Assert.assertEquals;
 
-public class JavaxJsonSerializerParserTest {
+public class ImmutableJsonSerializerParserTest {
+    JacksonStreamingSerializer serializer = new JacksonStreamingSerializer();
 
     @Test
     public void serializeAndParse() {
         Entity entity = new Entity(
                 Optional.of(Classes.of("foo-class", "bar-class")),
-                Optional.of(Json.createObjectBuilder().add("name", "Foo").add("dog", false).add("cat", true).build()),
+                Optional.of(Json.jObject(entry("name", Json.jString("Foo")), entry("dog", Json.jBoolean(false)), entry("cat", Json.jBoolean(true)))),
                 Optional.of(Entities.of(EmbeddedLink.of(new Rel(singletonList("rel1")), URI.create("http://www.vg.no"))
                         .with(Classes.of("foo-class", "bar-class"))
                         .with(MIMEType.JSON)
@@ -31,8 +34,10 @@ public class JavaxJsonSerializerParserTest {
                 empty(),
                 Optional.of("Megatittel"));
 
-        JsonValue json = Siren.toJson(entity, new JsonSerializer.JavaxJsonSerializer());
-        assertEquals(entity, Siren.fromJson(json.toString(), new JsonParser.JavaxJsonParser()));
+        Json.JValue json = Siren.toJson(entity, new JsonSerializer.ImmutableJsonSerializer());
+        String s = serializer.writeToString(json);
+        Entity parsed = Siren.fromJson(s, new JsonParser.ImmutableJsonParser());
+        assertEquals(entity, parsed);
     }
 
     @Test
@@ -42,7 +47,7 @@ public class JavaxJsonSerializerParserTest {
                         Rel.of("related"),
                         new Entity(
                                 Optional.of(Classes.of("test-class")),
-                                Optional.of(Json.createObjectBuilder().add("test1-key", "test1-value").add("test2-key", "test2-value").build()),
+                                Optional.of(Json.jObject(entry("test1-key", "test1-value"), entry("test2-key", "test2-value"))),
                                 empty(),
                                 empty(),
                                 Optional.of(Links.of(Link.of(Rel.of("test-link"), URI.create("http://www.github.com")))),
@@ -50,8 +55,9 @@ public class JavaxJsonSerializerParserTest {
                         )
                 ))
         );
-        JsonValue json = Siren.toJson(entity, new JsonSerializer.JavaxJsonSerializer());
-        assertEquals(entity, Siren.fromJson(json.toString(), new JsonParser.JavaxJsonParser()));
+        Json.JValue json = Siren.toJson(entity, new JsonSerializer.ImmutableJsonSerializer());
+        Entity data = Siren.fromJson(serializer.writeToString(json), new JsonParser.ImmutableJsonParser());
+        assertEquals(entity, data);
     }
 
     @Test
@@ -66,7 +72,17 @@ public class JavaxJsonSerializerParserTest {
                                 Optional.of(URLEncoded),
                                 Optional.of(Fields.of(Field.of("a"), Field.of("b", NUMBER))))
                 ));
-        JsonValue json = Siren.toJson(entity, new JsonSerializer.JavaxJsonSerializer());
-        assertEquals(entity, Siren.fromJson(json.toString(), new JsonParser.JavaxJsonParser()));
+        Json.JValue json = Siren.toJson(entity, new JsonSerializer.ImmutableJsonSerializer());
+        Entity data = Siren.fromJson(serializer.writeToString(json), new JsonParser.ImmutableJsonParser());
+        assertEquals(entity, data);
+    }
+
+
+    private Map.Entry<String, Json.JValue> entry(String name, Json.JValue value) {
+        return new AbstractMap.SimpleImmutableEntry<>(name, value);
+    }
+
+    private Map.Entry<String, Json.JValue> entry(String name, String value) {
+        return entry(name, Json.jString(value));
     }
 }

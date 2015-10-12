@@ -1,7 +1,7 @@
 package no.arktekk.siren;
 
+import net.hamnaberg.json.Json;
 import no.arktekk.siren.Field.Type;
-import org.glassfish.json.JsonFactory;
 import org.junit.Test;
 
 import java.util.Optional;
@@ -13,9 +13,9 @@ public class FieldTest {
 
     @Test
     public void construct() {
-        Field field = Field.of("foo").with(JsonFactory.jsonString("bar"));
+        Field field = Field.of("foo").with(Json.jString("bar"));
         assertEquals(field.name, "foo");
-        assertEquals(field.value, Optional.of(JsonFactory.jsonString("bar")));
+        assertEquals(field.value, Optional.of(Json.jString("bar")));
         assertEquals(field.classes, empty());
         assertEquals(field.title, empty());
         assertEquals(field.type, Type.TEXT);

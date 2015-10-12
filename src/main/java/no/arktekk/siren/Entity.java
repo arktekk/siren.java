@@ -1,19 +1,20 @@
 package no.arktekk.siren;
 
-import javax.json.JsonObject;
+import net.hamnaberg.json.Json;
+
 import java.util.Optional;
 
 import static java.util.Optional.empty;
 
 public final class Entity implements JsonSerializable {
     public final Optional<Classes> classes;
-    public final Optional<JsonObject> properties;
+    public final Optional<Json.JObject> properties;
     public final Optional<Entities> entities;
     public final Optional<Actions> actions;
     public final Optional<Links> links;
     public final Optional<String> title;
 
-    public Entity(Optional<Classes> classes, Optional<JsonObject> properties, Optional<Entities> entities, Optional<Actions> actions, Optional<Links> links, Optional<String> title) {
+    public Entity(Optional<Classes> classes, Optional<Json.JObject> properties, Optional<Entities> entities, Optional<Actions> actions, Optional<Links> links, Optional<String> title) {
         this.classes = classes;
         this.properties = properties;
         this.entities = entities;
@@ -30,7 +31,7 @@ public final class Entity implements JsonSerializable {
         return new Entity(Optional.of(classes), properties, entities, actions, links, title);
     }
 
-    public Entity with(JsonObject properties) { // TODO Få vekk JsonObject
+    public Entity with(Json.JObject properties) {
         return new Entity(classes, Optional.of(properties), entities, actions, links, title);
     }
 

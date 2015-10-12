@@ -1,6 +1,7 @@
 package no.arktekk.siren;
 
-import javax.json.JsonValue;
+import net.hamnaberg.json.Json;
+
 import java.util.Optional;
 
 import static java.util.Optional.empty;
@@ -9,10 +10,10 @@ public final class Field {
     public final String name;
     public final Type type;
     public final Optional<Classes> classes;
-    public final Optional<JsonValue> value; // TODO: Få vekk JsonValue
+    public final Optional<Json.JValue> value;
     public final Optional<String> title;
 
-    public Field(String name, Type type, Optional<Classes> classes, Optional<JsonValue> value, Optional<String> title) {
+    public Field(String name, Type type, Optional<Classes> classes, Optional<Json.JValue> value, Optional<String> title) {
         this.name = name;
         this.type = type;
         this.classes = classes;
@@ -32,7 +33,7 @@ public final class Field {
         return new Field(name, type, Optional.of(classes), value, title);
     }
 
-    public Field with(JsonValue value) { // TODO: Få vekk JsonValue
+    public Field with(Json.JValue value) { // TODO: Få vekk JsonValue
         return new Field(name, type, classes, Optional.of(value), title);
     }
 
