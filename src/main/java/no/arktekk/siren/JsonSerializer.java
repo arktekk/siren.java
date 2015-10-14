@@ -1,6 +1,5 @@
 package no.arktekk.siren;
 
-import com.fasterxml.jackson.core.JsonFactory;
 import net.hamnaberg.json.Json;
 import no.arktekk.siren.SubEntity.EmbeddedLink;
 import no.arktekk.siren.SubEntity.EmbeddedRepresentation;
