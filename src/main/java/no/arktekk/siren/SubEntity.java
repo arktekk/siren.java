@@ -11,17 +11,26 @@ public abstract class SubEntity implements JsonSerializable {
     private SubEntity() {
     }
 
-    public <X> X fold(Function<EmbeddedRepresentation, X> representation, Function<EmbeddedLink, X> link) {
-        if (this instanceof EmbeddedRepresentation)
-            return representation.apply(((EmbeddedRepresentation) this));
-        else if (this instanceof EmbeddedLink)
-            return link.apply((EmbeddedLink) this);
-        else
-            throw new RuntimeException("Unsupported SubEntity type");
-    }
+    public abstract <X> X fold(Function<EmbeddedRepresentation, X> representation, Function<EmbeddedLink, X> link);
 
     public <T> T toJson(JsonSerializer<T> serializer) {
         return fold(serializer::serialize, serializer::serialize);
+    }
+
+    public static SubEntity representation(Rel rel, Entity entity) {
+        return new EmbeddedRepresentation(rel, entity);
+    }
+
+    public static SubEntity link(Rel rel, URI href) {
+        return link(rel, href, empty(), empty(), empty());
+    }
+
+    public static SubEntity link(Link link) {
+        return new EmbeddedLink(link.rel, link.href, link.classes, link.type, link.title);
+    }
+
+    public static SubEntity link(Rel rel, URI href, Optional<Classes> classes, Optional<MIMEType> type, Optional<String> title) {
+        return new EmbeddedLink(rel, href, classes, type, title);
     }
 
     public static final class EmbeddedRepresentation extends SubEntity {
@@ -55,6 +64,11 @@ public abstract class SubEntity implements JsonSerializable {
             int result = rel.hashCode();
             result = 31 * result + entity.hashCode();
             return result;
+        }
+
+        @Override
+        public <X> X fold(Function<EmbeddedRepresentation, X> representation, Function<EmbeddedLink, X> link) {
+            return representation.apply(this);
         }
     }
 
@@ -90,6 +104,10 @@ public abstract class SubEntity implements JsonSerializable {
             return new EmbeddedLink(rel, href, classes, type, Optional.of(title));
         }
 
+        public Link toLink() {
+            return new Link(rel, href, classes, type, title);
+        }
+
         @Override
         public boolean equals(Object o) {
             if (this == o) return true;
@@ -113,6 +131,11 @@ public abstract class SubEntity implements JsonSerializable {
             result = 31 * result + type.hashCode();
             result = 31 * result + title.hashCode();
             return result;
+        }
+
+        @Override
+        public <X> X fold(Function<EmbeddedRepresentation, X> representation, Function<EmbeddedLink, X> link) {
+            return link.apply(this);
         }
     }
 }
