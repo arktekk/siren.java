@@ -51,6 +51,37 @@ public final class Entity implements JsonSerializable {
         return new Entity(classes, properties, entities, actions, links, Optional.of(title));
     }
 
+    public SubEntity.EmbeddedRepresentation toEmbedded(Rel rel) {
+        return new SubEntity.EmbeddedRepresentation(rel, this);
+    }
+
+    public Optional<Link> getLinkByRel(Rel rel) {
+        return links.flatMap(links -> links.stream().filter(l -> l.rel.equals(rel)).findFirst());
+    }
+
+    public Optional<Link> getLinkByRelIncludes(Rel rel) {
+        return links.flatMap(links -> links.stream().filter(l -> l.rel.includes(rel)).findFirst());
+    }
+
+    public Optional<Action> getActionByName(String name) {
+        return actions.flatMap(actions -> actions.stream().filter(l -> l.name.equals(name)).findFirst());
+    }
+
+    public Optional<Action> getActionByClasses(Classes classes) {
+        return actions.flatMap(actions -> actions.stream().filter(l -> l.classes.filter(classes::equals).isPresent()).findFirst());
+    }
+    public Optional<Action> getActionByClassesIncludes(Classes classes) {
+        return actions.flatMap(actions -> actions.stream().filter(l -> l.classes.filter(classes::includes).isPresent()).findFirst());
+    }
+
+    public Optional<SubEntity> getEntityByRel(Rel rel) {
+        return entities.flatMap(entities ->
+                        entities.stream().
+                                filter(l -> l.fold(e -> e.rel.equals(rel), e -> e.rel.equals(rel))).
+                                findFirst()
+        );
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
