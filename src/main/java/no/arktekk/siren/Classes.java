@@ -26,6 +26,12 @@ public final class Classes implements StreamableIterable<String> {
         }});
     }
 
+    public boolean includes(Classes rel) {
+        List<String> other = rel.classes;
+        List<String> us = this.classes;
+        return other.size() <= us.size() && StreamUtils.zip(us.stream(), other.stream(), String::equals).allMatch(t -> t);
+    }
+
     public Iterator<String> iterator() {
         return classes.iterator();
     }

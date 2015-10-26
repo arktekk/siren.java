@@ -37,6 +37,10 @@ public final class Link {
         return new Link(rel, href, classes, type, Optional.of(title));
     }
 
+    public SubEntity.EmbeddedLink toEmbedded() {
+        return new SubEntity.EmbeddedLink(rel, href, classes, type, title);
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
