@@ -1,22 +1,28 @@
 package no.arktekk.siren;
 
-import no.arktekk.siren.util.StreamUtils;
-import no.arktekk.siren.util.StreamableIterable;
-
 import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.List;
-import java.util.stream.Collectors;
+import java.util.Map;
+import java.util.TreeMap;
+
+import no.arktekk.siren.util.StreamableIterable;
 
 import static java.util.Arrays.asList;
-import static java.util.Collections.unmodifiableList;
+import static java.util.Collections.unmodifiableMap;
 
+/**
+ * Backed by Map to enforce unique action name invariant.
+ */
 public class Actions implements StreamableIterable<Action> {
 
-    private final List<Action> actions;
+    private final Map<String, Action> actions;
 
     public Actions(Iterable<Action> actions) {
-        this.actions = unmodifiableList(StreamUtils.stream(actions).collect(Collectors.toList()));
+        this.actions = unmodifiableMap(new TreeMap<String, Action>(String::compareTo) {{
+            for (Action action : actions) {
+                put(action.name, action);
+            }
+        }});
     }
 
     public static Actions of(Action action, Action... actions) {
@@ -27,7 +33,7 @@ public class Actions implements StreamableIterable<Action> {
     }
 
     public Iterator<Action> iterator() {
-        return actions.iterator();
+        return actions.values().iterator();
     }
 
     @Override
