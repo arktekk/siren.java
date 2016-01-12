@@ -48,7 +48,7 @@ public final class Action {
         return new Action(name, href, classes, title, method, Optional.of(type), fields);
     }
 
-    public Action with(Fields fields) { // TODO: Ha denne lik Fields.of? Da slipper man å eksplisitt jobbe med Fields. Kanskje forvirrende
+    public Action with(Fields fields) {
         return new Action(name, href, classes, title, method, type, Optional.of(fields));
     }
 
@@ -87,5 +87,33 @@ public final class Action {
         result = 31 * result + type.hashCode();
         result = 31 * result + fields.hashCode();
         return result;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public URI getHref() {
+        return href;
+    }
+
+    public Optional<Classes> getClasses() {
+        return classes;
+    }
+
+    public Optional<String> getTitle() {
+        return title;
+    }
+
+    public Optional<Method> getMethod() {
+        return method;
+    }
+
+    public Optional<MIMEType> getType() {
+        return type;
+    }
+
+    public Optional<Fields> getFields() {
+        return fields;
     }
 }

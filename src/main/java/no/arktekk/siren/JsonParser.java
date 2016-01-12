@@ -15,7 +15,8 @@ public interface JsonParser<T> {
 
     Entity fromJson(T json);
 
-    final class ImmutableJsonParser implements JsonParser<Json.JObject> {
+    enum ImmutableJsonParser implements JsonParser<Json.JObject> {
+        INSTANCE;
 
         public Entity fromJson(Json.JObject json) {
             return parseEntity(json);
