@@ -33,6 +33,8 @@ public abstract class SubEntity implements JsonSerializable {
         return new EmbeddedLink(rel, href, classes, type, title);
     }
 
+    public abstract Rel getRel();
+
     public static final class EmbeddedRepresentation extends SubEntity {
 
         public final Rel rel;

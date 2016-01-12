@@ -1,5 +1,6 @@
 package no.arktekk.siren;
 
+import no.arktekk.siren.util.CollectionUtils;
 import no.arktekk.siren.util.StreamUtils;
 import no.arktekk.siren.util.StreamableIterable;
 
@@ -8,22 +9,32 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static java.util.Arrays.asList;
 import static java.util.Collections.unmodifiableList;
 
 public final class Entities implements StreamableIterable<SubEntity> {
 
-    private List<SubEntity> subEntities;
+    private final List<SubEntity> subEntities;
+
+    public Entities(List<SubEntity> entities) {
+        this.subEntities = unmodifiableList(entities);
+    }
 
     public Entities(Iterable<SubEntity> entities) {
-        this.subEntities = unmodifiableList(StreamUtils.stream(entities).collect(Collectors.toList()));
+        this(StreamUtils.stream(entities).collect(Collectors.toList()));
     }
 
     public static Entities of(SubEntity entity, SubEntity... entities) {
-        return new Entities(new ArrayList<SubEntity>() {{
-            add(entity);
-            addAll(asList(entities));
-        }});
+        return new Entities(CollectionUtils.asList(entity, entities));
+    }
+
+    public Entities add(SubEntity entity) {
+        List<SubEntity> entities = new ArrayList<>(this.subEntities);
+        entities.add(entity);
+        return new Entities(entities);
+    }
+
+    public Entities remove(Rel rel) {
+        return new Entities(stream().filter(e -> !e.getRel().equals(rel)).collect(Collectors.toList()));
     }
 
     public Iterator<SubEntity> iterator() {
