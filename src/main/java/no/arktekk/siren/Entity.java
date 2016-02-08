@@ -117,16 +117,32 @@ public final class Entity implements JsonSerializable {
         return properties;
     }
 
+    public Json.JObject getPropertiesOrEmpty() {
+        return properties.orElse(Json.jEmptyObject());
+    }
+
     public Optional<Entities> getEntities() {
         return entities;
+    }
+
+    public Entities getEntitiesOrEmpty() {
+        return entities.orElse(Entities.empty());
     }
 
     public Optional<Actions> getActions() {
         return actions;
     }
 
+    public Actions getActionsOrEmpty() {
+        return actions.orElse(Actions.empty());
+    }
+
     public Optional<Links> getLinks() {
         return links;
+    }
+
+    public Links getLinksOrEmpty() {
+        return links.orElse(Links.empty());
     }
 
     public Optional<String> getTitle() {

@@ -5,6 +5,7 @@ import no.arktekk.siren.util.StreamUtils;
 import no.arktekk.siren.util.StreamableIterable;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -15,12 +16,16 @@ public final class Links implements StreamableIterable<Link> {
 
     private final List<Link> links;
 
-    public Links(List<Link> links) {
+    private Links(List<Link> links) {
         this.links = unmodifiableList(links);
     }
 
     public Links(Iterable<Link> links) {
         this(StreamUtils.stream(links).collect(Collectors.toList()));
+    }
+
+    public static Links empty() {
+        return new Links(Collections.emptyList());
     }
 
     public static Links of(Link link, Link... links) {

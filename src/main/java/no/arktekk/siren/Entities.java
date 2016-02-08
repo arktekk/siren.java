@@ -5,6 +5,7 @@ import no.arktekk.siren.util.StreamUtils;
 import no.arktekk.siren.util.StreamableIterable;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -21,6 +22,10 @@ public final class Entities implements StreamableIterable<SubEntity> {
 
     public Entities(Iterable<SubEntity> entities) {
         this(StreamUtils.stream(entities).collect(Collectors.toList()));
+    }
+
+    public static Entities empty() {
+        return new Entities(Collections.emptyList());
     }
 
     public static Entities of(SubEntity entity, SubEntity... entities) {

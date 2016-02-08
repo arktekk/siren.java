@@ -29,6 +29,10 @@ public final class Actions implements StreamableIterable<Action> {
         }});
     }
 
+    public static Actions empty() {
+        return new Actions(new TreeMap<>());
+    }
+
     public static Actions of(Action action, Action... actions) {
         return new Actions(CollectionUtils.asList(action, actions));
     }
