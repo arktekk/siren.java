@@ -33,6 +33,8 @@ public abstract class SubEntity implements JsonSerializable {
         return new EmbeddedLink(rel, href, classes, type, title);
     }
 
+    public abstract Rel getRel();
+
     public static final class EmbeddedRepresentation extends SubEntity {
 
         public final Rel rel;
@@ -69,6 +71,14 @@ public abstract class SubEntity implements JsonSerializable {
         @Override
         public <X> X fold(Function<EmbeddedRepresentation, X> representation, Function<EmbeddedLink, X> link) {
             return representation.apply(this);
+        }
+
+        public Rel getRel() {
+            return rel;
+        }
+
+        public Entity getEntity() {
+            return entity;
         }
     }
 
@@ -136,6 +146,26 @@ public abstract class SubEntity implements JsonSerializable {
         @Override
         public <X> X fold(Function<EmbeddedRepresentation, X> representation, Function<EmbeddedLink, X> link) {
             return link.apply(this);
+        }
+
+        public Rel getRel() {
+            return rel;
+        }
+
+        public URI getHref() {
+            return href;
+        }
+
+        public Optional<Classes> getClasses() {
+            return classes;
+        }
+
+        public Optional<MIMEType> getType() {
+            return type;
+        }
+
+        public Optional<String> getTitle() {
+            return title;
         }
     }
 }

@@ -11,11 +11,8 @@ import java.nio.charset.UnsupportedCharsetException;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-public final class WWWUrlEncodedFieldSerializer implements FieldSerializer {
-    public static final WWWUrlEncodedFieldSerializer INSTANCE = new WWWUrlEncodedFieldSerializer();
-
-    private WWWUrlEncodedFieldSerializer() {
-    }
+public enum WWWUrlEncodedFieldSerializer implements FieldSerializer {
+    INSTANCE;
 
     public Optional<String> serialize(MIMEType mimeType, Optional<Fields> fields) {
         return fields.filter(f -> MIMEType.URLEncoded.includedBy(mimeType)).map(fs -> fs.stream().map(this::format).collect(Collectors.joining("&")));

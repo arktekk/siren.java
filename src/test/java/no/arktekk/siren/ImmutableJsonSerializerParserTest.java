@@ -19,8 +19,6 @@ import static no.arktekk.siren.Method.POST;
 import static org.junit.Assert.assertEquals;
 
 public class ImmutableJsonSerializerParserTest {
-    JacksonStreamingSerializer serializer = new JacksonStreamingSerializer();
-
     @Test
     public void serializeAndParse() {
         Entity entity = new Entity(
@@ -34,9 +32,8 @@ public class ImmutableJsonSerializerParserTest {
                 empty(),
                 Optional.of("Megatittel"));
 
-        Json.JValue json = Siren.toJson(entity, new JsonSerializer.ImmutableJsonSerializer());
-        String s = serializer.writeToString(json);
-        Entity parsed = Siren.fromJson(s, new JsonParser.ImmutableJsonParser());
+        String s = Siren.toString(entity);
+        Entity parsed = Siren.parse(s);
         assertEquals(entity, parsed);
     }
 
@@ -55,8 +52,8 @@ public class ImmutableJsonSerializerParserTest {
                         )
                 ))
         );
-        Json.JValue json = Siren.toJson(entity, new JsonSerializer.ImmutableJsonSerializer());
-        Entity data = Siren.fromJson(serializer.writeToString(json), new JsonParser.ImmutableJsonParser());
+        String json = Siren.toString(entity);
+        Entity data = Siren.parse(json);
         assertEquals(entity, data);
     }
 
@@ -72,8 +69,8 @@ public class ImmutableJsonSerializerParserTest {
                                 Optional.of(URLEncoded),
                                 Optional.of(Fields.of(Field.of("a"), Field.of("b", NUMBER))))
                 ));
-        Json.JValue json = Siren.toJson(entity, new JsonSerializer.ImmutableJsonSerializer());
-        Entity data = Siren.fromJson(serializer.writeToString(json), new JsonParser.ImmutableJsonParser());
+        String json = Siren.toString(entity);
+        Entity data = Siren.parse(json);
         assertEquals(entity, data);
     }
 

@@ -2,24 +2,42 @@ package no.arktekk.siren;
 
 import net.hamnaberg.json.Json;
 import net.hamnaberg.json.io.JacksonStreamingParser;
+import net.hamnaberg.json.io.JacksonStreamingSerializer;
 
 import java.io.InputStream;
+import java.io.OutputStream;
+import java.io.Writer;
 
 public final class Siren {
-    public static Entity fromJson(InputStream is, JsonParser<Json.JObject> converter) {
-        JacksonStreamingParser streamParser = new JacksonStreamingParser();
+    private static final JacksonStreamingParser streamParser = new JacksonStreamingParser();
+    private static final JacksonStreamingSerializer serializer = new JacksonStreamingSerializer();
+
+    public static Entity parse(InputStream is) {
         Json.JValue parse = streamParser.parse(is);
-        return converter.fromJson(parse.asJsonObjectOrEmpty());
+        return JsonParser.ImmutableJsonParser.INSTANCE.fromJson(parse.asJsonObjectOrEmpty());
     }
 
-    public static Entity fromJson(String json, JsonParser<Json.JObject> converter) {
-        JacksonStreamingParser streamParser = new JacksonStreamingParser();
+    public static Entity parse(String json) {
         Json.JValue parse = streamParser.parse(json);
-        return converter.fromJson(parse.asJsonObjectOrEmpty());
+        return JsonParser.ImmutableJsonParser.INSTANCE.fromJson(parse.asJsonObjectOrEmpty());
     }
 
-    public static Json.JValue toJson(Entity entity, JsonSerializer<Json.JValue> serializer) {
-        return serializer.serialize(entity);
+    public static Json.JValue toJson(Entity entity) {
+        return JsonSerializer.ImmutableJsonSerializer.INSTANCE.serialize(entity);
+    }
+
+    public static void write(Entity entity, OutputStream stream) {
+        Json.JValue json = toJson(entity);
+        serializer.write(json, stream);
+    }
+    public static void write(Entity entity, Writer stream) {
+        Json.JValue json = toJson(entity);
+        serializer.write(json, stream);
+    }
+
+    public static String toString(Entity entity) {
+        Json.JValue json = toJson(entity);
+        return serializer.writeToString(json);
     }
 
 }

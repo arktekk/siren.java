@@ -17,7 +17,8 @@ public interface JsonSerializer<T> {
 
     T serialize(Entity entity);
 
-    final class ImmutableJsonSerializer implements JsonSerializer<Json.JValue> {
+    enum ImmutableJsonSerializer implements JsonSerializer<Json.JValue> {
+        INSTANCE;
 
         private static Function<Iterable<String>, Json.JArray> FromIterableString =
                 strings -> Json.jArray((StreamUtils.stream(strings).map(Json::jString).collect(Collectors.toList())));

@@ -1,13 +1,22 @@
 package no.arktekk.siren.util;
 
+import java.util.AbstractMap;
 import java.util.Iterator;
+import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.BiFunction;
+import java.util.stream.IntStream;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
 public abstract class StreamUtils {
     private StreamUtils(){}
+
+    public static <A> Stream<Map.Entry<A, Integer>> zipWithIndex(Stream<A> streamA) {
+        Stream<Integer> boxed = IntStream.iterate(0, i -> i + 1).boxed();
+        return zip(streamA, boxed, AbstractMap.SimpleImmutableEntry::new);
+    }
 
     public static <A, B, C> Stream<C> zip(Stream<A> streamA, Stream<B> streamB, BiFunction<A, B, C> zipper) {
         final Iterator<A> iteratorA = streamA.iterator();

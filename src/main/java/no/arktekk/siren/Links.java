@@ -1,29 +1,45 @@
 package no.arktekk.siren;
 
+import no.arktekk.siren.util.CollectionUtils;
 import no.arktekk.siren.util.StreamUtils;
 import no.arktekk.siren.util.StreamableIterable;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static java.util.Arrays.asList;
 import static java.util.Collections.unmodifiableList;
 
-public class Links implements StreamableIterable<Link> {
+public final class Links implements StreamableIterable<Link> {
 
-    private List<Link> links;
+    private final List<Link> links;
+
+    private Links(List<Link> links) {
+        this.links = unmodifiableList(links);
+    }
 
     public Links(Iterable<Link> links) {
-        this.links = unmodifiableList(StreamUtils.stream(links).collect(Collectors.toList()));
+        this(StreamUtils.stream(links).collect(Collectors.toList()));
+    }
+
+    public static Links empty() {
+        return new Links(Collections.emptyList());
     }
 
     public static Links of(Link link, Link... links) {
-        return new Links(new ArrayList<Link>() {{
-            add(link);
-            addAll(asList(links));
-        }});
+        return new Links(CollectionUtils.asList(link, links));
+    }
+
+    public Links add(Link link) {
+        List<Link> entities = new ArrayList<>(this.links);
+        entities.add(link);
+        return new Links(entities);
+    }
+
+    public Links remove(Rel rel) {
+        return new Links(stream().filter(e -> !e.getRel().equals(rel)).collect(Collectors.toList()));
     }
 
     public Iterator<Link> iterator() {

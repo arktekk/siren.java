@@ -66,6 +66,27 @@ public final class Field {
         return result;
     }
 
+
+    public String getName() {
+        return name;
+    }
+
+    public Type getType() {
+        return type;
+    }
+
+    public Optional<Classes> getClasses() {
+        return classes;
+    }
+
+    public Optional<Json.JValue> getValue() {
+        return value;
+    }
+
+    public Optional<String> getTitle() {
+        return title;
+    }
+
     public enum Type {
         HIDDEN("hidden"),
         TEXT("text"),

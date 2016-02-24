@@ -65,4 +65,24 @@ public final class Link {
         result = 31 * result + title.hashCode();
         return result;
     }
+
+    public Rel getRel() {
+        return rel;
+    }
+
+    public URI getHref() {
+        return href;
+    }
+
+    public Optional<Classes> getClasses() {
+        return classes;
+    }
+
+    public Optional<MIMEType> getType() {
+        return type;
+    }
+
+    public Optional<String> getTitle() {
+        return title;
+    }
 }
