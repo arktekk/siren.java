@@ -1,5 +1,6 @@
 package no.arktekk.siren;
 
+import no.arktekk.siren.util.CollectionUtils;
 import no.arktekk.siren.util.StreamUtils;
 import no.arktekk.siren.util.StreamableIterable;
 
@@ -8,22 +9,22 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static java.util.Arrays.asList;
 import static java.util.Collections.unmodifiableList;
 
 public final class Rel implements StreamableIterable<String> {
 
     private final List<String> rels;
 
+    private Rel(List<String> rels) {
+        this.rels = unmodifiableList(rels);
+    }
+
     public Rel(Iterable<String> rels) {
-        this.rels = unmodifiableList(StreamUtils.stream(rels).collect(Collectors.toList()));
+        this(StreamUtils.stream(rels).collect(Collectors.toList()));
     }
 
     public static Rel of(String rel, String... rels) {
-        return new Rel(new ArrayList<String>() {{
-            add(rel);
-            addAll(asList(rels));
-        }});
+        return new Rel(CollectionUtils.asList(rel, rels));
     }
 
     public boolean includes(Rel rel) {
@@ -34,6 +35,24 @@ public final class Rel implements StreamableIterable<String> {
 
     public boolean includes(String rel) {
         return includes(Rel.of(rel));
+    }
+
+    public Rel add(String rel) {
+        List<String> list = new ArrayList<>(this.rels);
+        list.add(rel);
+        return new Rel(list);
+    }
+
+    public Rel addAll(Rel rels) {
+        List<String> list = new ArrayList<>(this.rels);
+        list.addAll(rels.rels);
+        return new Rel(list);
+    }
+
+    public Rel remove(String rel) {
+        List<String> list = new ArrayList<>(this.rels);
+        list.remove(rel);
+        return new Rel(list);
     }
 
     public Iterator<String> iterator() {
