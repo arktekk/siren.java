@@ -22,6 +22,10 @@ public final class Siren {
         return JsonParser.ImmutableJsonParser.INSTANCE.fromJson(parse.asJsonObjectOrEmpty());
     }
 
+    public static Entity parse(Json.JObject json) {
+        return JsonParser.ImmutableJsonParser.INSTANCE.fromJson(json);
+    }
+
     public static Json.JValue toJson(Entity entity) {
         return JsonSerializer.ImmutableJsonSerializer.INSTANCE.serialize(entity);
     }
