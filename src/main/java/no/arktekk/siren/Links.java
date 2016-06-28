@@ -1,5 +1,6 @@
 package no.arktekk.siren;
 
+import javaslang.control.Option;
 import no.arktekk.siren.util.CollectionUtils;
 import no.arktekk.siren.util.StreamUtils;
 import no.arktekk.siren.util.StreamableIterable;
@@ -40,6 +41,14 @@ public final class Links implements StreamableIterable<Link> {
 
     public Links remove(Rel rel) {
         return new Links(stream().filter(e -> !e.getRel().equals(rel)).collect(Collectors.toList()));
+    }
+
+    public Option<Link> getLinkByRel(Rel rel) {
+        return Option.ofOptional(links.stream().filter(l -> l.rel.equals(rel)).findFirst());
+    }
+
+    public Option<Link> getLinkByRelIncludes(Rel rel) {
+        return Option.ofOptional(links.stream().filter(l -> l.rel.includes(rel)).findFirst());
     }
 
     public Iterator<Link> iterator() {

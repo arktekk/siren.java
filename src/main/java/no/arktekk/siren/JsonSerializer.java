@@ -25,34 +25,34 @@ public interface JsonSerializer<T> {
 
         private Json.JObject sirenBuilder(Entity entity) {
             Map<String, Json.JValue> map = new LinkedHashMap<>();
-            entity.classes.ifPresent(cs -> map.put("class", FromIterableString.apply(cs)));
-            entity.properties.ifPresent(ps -> map.put("properties", ps));
-            entity.entities.ifPresent(es -> map.put("entities", Json.jArray(es.stream().map(e -> e.toJson(this)).collect(Collectors.toList()))));
-            entity.links.ifPresent(ls -> map.put("links", Json.jArray(ls.stream().map(l -> {
+            entity.classes.forEach(cs -> map.put("class", FromIterableString.apply(cs)));
+            entity.properties.forEach(ps -> map.put("properties", ps));
+            entity.entities.forEach(es -> map.put("entities", Json.jArray(es.stream().map(e -> e.toJson(this)).collect(Collectors.toList()))));
+            entity.links.forEach(ls -> map.put("links", Json.jArray(ls.stream().map(l -> {
                 return Json.jObject(entry("rel", FromIterableString.apply(l.rel)),
                         entry("href", Json.jString(l.href.toString())));
             }).collect(Collectors.toList()))));
-            entity.actions.ifPresent(as -> map.put("actions", Json.jArray(as.stream().map(a -> {
+            entity.actions.forEach(as -> map.put("actions", Json.jArray(as.stream().map(a -> {
                 Map<String, Json.JValue> action = new LinkedHashMap<>();
                 action.put("name", Json.jString(a.name));
-                a.classes.ifPresent(cs -> action.put("class", FromIterableString.apply(cs)));
-                a.method.ifPresent(m -> action.put("method", Json.jString(m.name())));
+                a.classes.forEach(cs -> action.put("class", FromIterableString.apply(cs)));
+                a.method.forEach(m -> action.put("method", Json.jString(m.name())));
                 action.put("href", Json.jString(a.href.toString()));
-                a.title.ifPresent(t -> action.put("title", Json.jString(t)));
-                a.type.ifPresent(t -> action.put("type", Json.jString(t.format())));
-                a.fields.ifPresent(fs ->
+                a.title.forEach(t -> action.put("title", Json.jString(t)));
+                a.type.forEach(t -> action.put("type", Json.jString(t.format())));
+                a.fields.forEach(fs ->
                         action.put("fields", Json.jArray(fs.stream().map(f -> {
                             Map<String, Json.JValue> field = new LinkedHashMap<>();
                             field.put("name", Json.jString(f.name));
-                            f.classes.ifPresent(cs -> field.put("class", FromIterableString.apply(cs)));
+                            f.classes.forEach(cs -> field.put("class", FromIterableString.apply(cs)));
                             field.put("type", Json.jString(f.type.value));
-                            f.value.ifPresent(v -> field.put("value", v));
-                            f.title.ifPresent(t -> field.put("title", Json.jString(t)));
+                            f.value.forEach(v -> field.put("value", v));
+                            f.title.forEach(t -> field.put("title", Json.jString(t)));
                             return Json.jObject(field);
                         }).collect(Collectors.toList()))));
                 return Json.jObject(action);
             }).collect(Collectors.toList()))));
-            entity.title.ifPresent(t -> map.put("title", Json.jString(t)));
+            entity.title.forEach(t -> map.put("title", Json.jString(t)));
             return Json.jObject(map);
         }
 
@@ -71,11 +71,11 @@ public interface JsonSerializer<T> {
 
         public Json.JValue serialize(EmbeddedLink embeddedLink) {
             Map<String, Json.JValue> object = new LinkedHashMap<>();
-            embeddedLink.classes.ifPresent(cs -> object.put("class", FromIterableString.apply(cs)));
+            embeddedLink.classes.forEach(cs -> object.put("class", FromIterableString.apply(cs)));
             object.put("rel", FromIterableString.apply(embeddedLink.rel));
             object.put("href", Json.jString(embeddedLink.href.toString()));
-            embeddedLink.title.ifPresent(t -> object.put("title", Json.jString(t)));
-            embeddedLink.type.ifPresent(t -> object.put("type", Json.jString(t.format())));
+            embeddedLink.title.forEach(t -> object.put("title", Json.jString(t)));
+            embeddedLink.type.forEach(t -> object.put("type", Json.jString(t.format())));
             return Json.jObject(object);
         }
     }

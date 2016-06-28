@@ -1,5 +1,7 @@
 package no.arktekk.siren;
 
+import javaslang.control.Option;
+
 import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -19,7 +21,7 @@ public final class MIMEType {
     private final String minor;
     private final SortedMap<String, String> parameters;
 
-    public static Optional<MIMEType> parse(String s) {
+    public static Option<MIMEType> parse(String s) {
         Matcher matcher = MIMETypePattern.matcher(s);
         if (matcher.matches()) {
             String major = matcher.group(1);
@@ -37,9 +39,9 @@ public final class MIMEType {
                     }
                 }
             }
-            return Optional.of(new MIMEType(major, minor, params));
+            return Option.of(new MIMEType(major, minor, params));
         }
-        return Optional.empty();
+        return Option.none();
     }
 
     public static MIMEType application(String minor) {

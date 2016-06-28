@@ -1,19 +1,20 @@
 package no.arktekk.siren;
 
-import java.net.URI;
-import java.util.Optional;
+import javaslang.control.Option;
 
-import static java.util.Optional.empty;
+import java.net.URI;
+
+import static javaslang.control.Option.none;
 
 public final class Link {
 
     public final Rel rel;
     public final URI href;
-    public final Optional<Classes> classes;
-    public final Optional<MIMEType> type;
-    public final Optional<String> title;
+    public final Option<Classes> classes;
+    public final Option<MIMEType> type;
+    public final Option<String> title;
 
-    public Link(Rel rel, URI href, Optional<Classes> classes, Optional<MIMEType> type, Optional<String> title) {
+    public Link(Rel rel, URI href, Option<Classes> classes, Option<MIMEType> type, Option<String> title) {
         this.rel = rel;
         this.href = href;
         this.classes = classes;
@@ -22,19 +23,19 @@ public final class Link {
     }
 
     public static Link of(Rel rel, URI href) {
-        return new Link(rel, href, empty(), empty(), empty());
+        return new Link(rel, href, none(), none(), none());
     }
 
     public Link with(Classes classes) {
-        return new Link(rel, href, Optional.of(classes), type, title);
+        return new Link(rel, href, Option.of(classes), type, title);
     }
 
     public Link with(MIMEType type) {
-        return new Link(rel, href, classes, Optional.of(type), title);
+        return new Link(rel, href, classes, Option.of(type), title);
     }
 
     public Link with(String title) {
-        return new Link(rel, href, classes, type, Optional.of(title));
+        return new Link(rel, href, classes, type, Option.of(title));
     }
 
     public SubEntity.EmbeddedLink toEmbedded() {
@@ -74,15 +75,15 @@ public final class Link {
         return href;
     }
 
-    public Optional<Classes> getClasses() {
+    public Option<Classes> getClasses() {
         return classes;
     }
 
-    public Optional<MIMEType> getType() {
+    public Option<MIMEType> getType() {
         return type;
     }
 
-    public Optional<String> getTitle() {
+    public Option<String> getTitle() {
         return title;
     }
 }

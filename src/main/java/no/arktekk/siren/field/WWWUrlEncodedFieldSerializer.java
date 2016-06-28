@@ -1,5 +1,6 @@
 package no.arktekk.siren.field;
 
+import javaslang.control.Option;
 import net.hamnaberg.json.Json;
 import no.arktekk.siren.Field;
 import no.arktekk.siren.Fields;
@@ -8,18 +9,17 @@ import no.arktekk.siren.MIMEType;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.nio.charset.UnsupportedCharsetException;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 public enum WWWUrlEncodedFieldSerializer implements FieldSerializer {
     INSTANCE;
 
-    public Optional<String> serialize(MIMEType mimeType, Optional<Fields> fields) {
+    public Option<String> serialize(MIMEType mimeType, Option<Fields> fields) {
         return fields.filter(f -> MIMEType.URLEncoded.includedBy(mimeType)).map(fs -> fs.stream().map(this::format).collect(Collectors.joining("&")));
     }
 
     private String format(Field f) {
-        return String.format("%s=%s", encode(f.name), encode(f.value.map(this::toString).orElse("")));
+        return String.format("%s=%s", encode(f.name), encode(f.value.map(this::toString).getOrElse("")));
     }
 
     private String toString(Json.JValue jv) {

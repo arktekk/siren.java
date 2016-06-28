@@ -1,10 +1,12 @@
 package no.arktekk.siren;
 
+import javaslang.control.Option;
+
 import java.net.URI;
-import java.util.Optional;
 import java.util.function.Function;
 
-import static java.util.Optional.empty;
+import static javaslang.control.Option.none;
+
 
 public abstract class SubEntity implements JsonSerializable {
 
@@ -22,14 +24,14 @@ public abstract class SubEntity implements JsonSerializable {
     }
 
     public static SubEntity link(Rel rel, URI href) {
-        return link(rel, href, empty(), empty(), empty());
+        return link(rel, href, none(), none(), none());
     }
 
     public static SubEntity link(Link link) {
         return new EmbeddedLink(link.rel, link.href, link.classes, link.type, link.title);
     }
 
-    public static SubEntity link(Rel rel, URI href, Optional<Classes> classes, Optional<MIMEType> type, Optional<String> title) {
+    public static SubEntity link(Rel rel, URI href, Option<Classes> classes, Option<MIMEType> type, Option<String> title) {
         return new EmbeddedLink(rel, href, classes, type, title);
     }
 
@@ -86,11 +88,11 @@ public abstract class SubEntity implements JsonSerializable {
 
         public final Rel rel;
         public final URI href;
-        public final Optional<Classes> classes;
-        public final Optional<MIMEType> type;
-        public final Optional<String> title;
+        public final Option<Classes> classes;
+        public final Option<MIMEType> type;
+        public final Option<String> title;
 
-        public EmbeddedLink(Rel rel, URI href, Optional<Classes> classes, Optional<MIMEType> type, Optional<String> title) {
+        public EmbeddedLink(Rel rel, URI href, Option<Classes> classes, Option<MIMEType> type, Option<String> title) {
             this.rel = rel;
             this.href = href;
             this.classes = classes;
@@ -99,19 +101,19 @@ public abstract class SubEntity implements JsonSerializable {
         }
 
         public static EmbeddedLink of(Rel rel, URI href) {
-            return new EmbeddedLink(rel, href, empty(), empty(), empty());
+            return new EmbeddedLink(rel, href, none(), none(), none());
         }
 
         public EmbeddedLink with(Classes classes) {
-            return new EmbeddedLink(rel, href, Optional.of(classes), type, title);
+            return new EmbeddedLink(rel, href, Option.of(classes), type, title);
         }
 
         public EmbeddedLink with(MIMEType type) {
-            return new EmbeddedLink(rel, href, classes, Optional.of(type), title);
+            return new EmbeddedLink(rel, href, classes, Option.of(type), title);
         }
 
         public EmbeddedLink with(String title) {
-            return new EmbeddedLink(rel, href, classes, type, Optional.of(title));
+            return new EmbeddedLink(rel, href, classes, type, Option.of(title));
         }
 
         public Link toLink() {
@@ -156,15 +158,15 @@ public abstract class SubEntity implements JsonSerializable {
             return href;
         }
 
-        public Optional<Classes> getClasses() {
+        public Option<Classes> getClasses() {
             return classes;
         }
 
-        public Optional<MIMEType> getType() {
+        public Option<MIMEType> getType() {
             return type;
         }
 
-        public Optional<String> getTitle() {
+        public Option<String> getTitle() {
             return title;
         }
     }

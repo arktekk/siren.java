@@ -1,19 +1,19 @@
 package no.arktekk.siren;
 
+import javaslang.control.Option;
 import net.hamnaberg.json.Json;
 
-import java.util.Optional;
+import static javaslang.control.Option.none;
 
-import static java.util.Optional.empty;
 
 public final class Field {
     public final String name;
     public final Type type;
-    public final Optional<Classes> classes;
-    public final Optional<Json.JValue> value;
-    public final Optional<String> title;
+    public final Option<Classes> classes;
+    public final Option<Json.JValue> value;
+    public final Option<String> title;
 
-    public Field(String name, Type type, Optional<Classes> classes, Optional<Json.JValue> value, Optional<String> title) {
+    public Field(String name, Type type, Option<Classes> classes, Option<Json.JValue> value, Option<String> title) {
         this.name = name;
         this.type = type;
         this.classes = classes;
@@ -22,23 +22,23 @@ public final class Field {
     }
 
     public static Field of(String name) {
-        return new Field(name, Type.TEXT, empty(), empty(), empty());
+        return new Field(name, Type.TEXT, none(), none(), none());
     }
 
     public static Field of(String name, Type type) {
-        return new Field(name, type, empty(), empty(), empty());
+        return new Field(name, type, none(), none(), none());
     }
 
     public Field with(Classes classes) {
-        return new Field(name, type, Optional.of(classes), value, title);
+        return new Field(name, type, Option.of(classes), value, title);
     }
 
     public Field with(Json.JValue value) { // TODO: Få vekk JsonValue
-        return new Field(name, type, classes, Optional.of(value), title);
+        return new Field(name, type, classes, Option.of(value), title);
     }
 
     public Field with(String title) {
-        return new Field(name, type, classes, value, Optional.of(title));
+        return new Field(name, type, classes, value, Option.of(title));
     }
 
     @Override
@@ -75,15 +75,15 @@ public final class Field {
         return type;
     }
 
-    public Optional<Classes> getClasses() {
+    public Option<Classes> getClasses() {
         return classes;
     }
 
-    public Optional<Json.JValue> getValue() {
+    public Option<Json.JValue> getValue() {
         return value;
     }
 
-    public Optional<String> getTitle() {
+    public Option<String> getTitle() {
         return title;
     }
 

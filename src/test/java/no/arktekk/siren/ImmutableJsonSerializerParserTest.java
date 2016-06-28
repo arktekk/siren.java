@@ -1,7 +1,7 @@
 package no.arktekk.siren;
 
+import javaslang.control.Option;
 import net.hamnaberg.json.Json;
-import net.hamnaberg.json.io.JacksonStreamingSerializer;
 import no.arktekk.siren.SubEntity.EmbeddedLink;
 import no.arktekk.siren.SubEntity.EmbeddedRepresentation;
 import org.junit.Test;
@@ -9,10 +9,9 @@ import org.junit.Test;
 import java.net.URI;
 import java.util.AbstractMap;
 import java.util.Map;
-import java.util.Optional;
 
 import static java.util.Collections.singletonList;
-import static java.util.Optional.empty;
+import static javaslang.control.Option.none;
 import static no.arktekk.siren.Field.Type.NUMBER;
 import static no.arktekk.siren.MIMEType.URLEncoded;
 import static no.arktekk.siren.Method.POST;
@@ -22,15 +21,15 @@ public class ImmutableJsonSerializerParserTest {
     @Test
     public void serializeAndParse() {
         Entity entity = new Entity(
-                Optional.of(Classes.of("foo-class", "bar-class")),
-                Optional.of(Json.jObject(entry("name", Json.jString("Foo")), entry("dog", Json.jBoolean(false)), entry("cat", Json.jBoolean(true)))),
-                Optional.of(Entities.of(EmbeddedLink.of(new Rel(singletonList("rel1")), URI.create("http://www.vg.no"))
+                Option.of(Classes.of("foo-class", "bar-class")),
+                Option.of(Json.jObject(entry("name", Json.jString("Foo")), entry("dog", Json.jBoolean(false)), entry("cat", Json.jBoolean(true)))),
+                Option.of(Entities.of(EmbeddedLink.of(new Rel(singletonList("rel1")), URI.create("http://www.vg.no"))
                         .with(Classes.of("foo-class", "bar-class"))
                         .with(MIMEType.JSON)
                         .with("Supertittel"))),
-                empty(),
-                empty(),
-                Optional.of("Megatittel"));
+                none(),
+                none(),
+                Option.of("Megatittel"));
 
         String s = Siren.toString(entity);
         Entity parsed = Siren.parse(s);
@@ -43,12 +42,12 @@ public class ImmutableJsonSerializerParserTest {
                 Entities.of(new EmbeddedRepresentation(
                         Rel.of("related"),
                         new Entity(
-                                Optional.of(Classes.of("test-class")),
-                                Optional.of(Json.jObject(entry("test1-key", "test1-value"), entry("test2-key", "test2-value"))),
-                                empty(),
-                                empty(),
-                                Optional.of(Links.of(Link.of(Rel.of("test-link"), URI.create("http://www.github.com")))),
-                                empty()
+                                Option.of(Classes.of("test-class")),
+                                Option.of(Json.jObject(entry("test1-key", "test1-value"), entry("test2-key", "test2-value"))),
+                                none(),
+                                none(),
+                                Option.of(Links.of(Link.of(Rel.of("test-link"), URI.create("http://www.github.com")))),
+                                none()
                         )
                 ))
         );
@@ -63,11 +62,11 @@ public class ImmutableJsonSerializerParserTest {
                 Actions.of(new Action(
                                 "do-it",
                                 URI.create("http://www.github.com"),
-                                Optional.of(Classes.of("do-it-class")),
-                                Optional.of("Do It"),
-                                Optional.of(POST),
-                                Optional.of(URLEncoded),
-                                Optional.of(Fields.of(Field.of("a"), Field.of("b", NUMBER))))
+                                Option.of(Classes.of("do-it-class")),
+                                Option.of("Do It"),
+                                Option.of(POST),
+                                Option.of(URLEncoded),
+                                Option.of(Fields.of(Field.of("a"), Field.of("b", NUMBER))))
                 ));
         String json = Siren.toString(entity);
         Entity data = Siren.parse(json);

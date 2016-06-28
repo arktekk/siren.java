@@ -3,6 +3,7 @@ package no.arktekk.siren;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import javaslang.control.Option;
 import no.arktekk.siren.util.CollectionUtils;
 import no.arktekk.siren.util.StreamableIterable;
 
@@ -51,6 +52,19 @@ public final class Actions implements StreamableIterable<Action> {
 
     public Iterator<Action> iterator() {
         return actions.values().iterator();
+    }
+
+
+    public Option<Action> getActionByName(String name) {
+        return Option.of(actions.get(name));
+    }
+
+    public Option<Action> getActionByClasses(Classes classes) {
+        return Option.ofOptional(stream().filter(l -> l.classes.filter(classes::equals).isDefined()).findFirst());
+    }
+
+    public Option<Action> getActionByClassesIncludes(Classes classes) {
+        return Option.ofOptional(stream().filter(l -> l.classes.filter(classes::includes).isDefined()).findFirst());
     }
 
     @Override

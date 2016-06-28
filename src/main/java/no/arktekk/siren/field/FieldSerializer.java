@@ -1,11 +1,11 @@
 package no.arktekk.siren.field;
 
+import javaslang.control.Option;
 import no.arktekk.siren.Fields;
 import no.arktekk.siren.MIMEType;
 
-import java.util.Optional;
 
 @FunctionalInterface
 public interface FieldSerializer {
-    Optional<String> serialize(MIMEType mimeType, Optional<Fields> fields);
+    Option<String> serialize(MIMEType mimeType, Option<Fields> fields);
 }
