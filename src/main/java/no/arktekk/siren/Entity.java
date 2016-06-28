@@ -75,11 +75,7 @@ public final class Entity implements JsonSerializable {
     }
 
     public Option<SubEntity> getEntityByRel(Rel rel) {
-        return entities.flatMap(entities ->
-                Option.ofOptional(entities.stream().
-                        filter(l -> l.fold(e -> e.rel.equals(rel), e -> e.rel.equals(rel))).
-                        findFirst())
-        );
+        return entities.flatMap(entities -> entities.getEntityByRel(rel));
     }
 
     @Override

@@ -1,28 +1,26 @@
 package no.arktekk.siren;
 
-import no.arktekk.siren.util.CollectionUtils;
-import no.arktekk.siren.util.StreamUtils;
+import javaslang.collection.Iterator;
+import javaslang.collection.List;
 import no.arktekk.siren.util.StreamableIterable;
 
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.function.Function;
 
-import static java.util.Collections.unmodifiableList;
 
 public final class Fields implements StreamableIterable<Field> {
 
     private final List<Field> fields;
 
     private Fields(List<Field> fields) {
-        this.fields = unmodifiableList(fields);
+        this.fields = fields;
     }
 
     public Fields(Iterable<Field> fields) {
-        this(StreamUtils.stream(fields).collect(Collectors.toList()));
+        this(List.ofAll(fields));
     }
 
     public static Fields of(Field field, Field ... fields) {
-        return new Fields(CollectionUtils.asList(field, fields));
+        return new Fields(List.of(fields).prepend(field));
     }
 
     public Fields replace(Field field) {
@@ -30,13 +28,19 @@ public final class Fields implements StreamableIterable<Field> {
     }
 
     public Fields add(Field field) {
-        List<Field> fields = new ArrayList<>(this.fields);
-        fields.add(field);
-        return new Fields(fields);
+        return new Fields(fields.append(field));
     }
 
     public Fields remove(String name) {
-        return new Fields(stream().filter(f -> !f.name.equals(name)).collect(Collectors.toList()));
+        return new Fields(fields.filter(f -> !f.name.equals(name)));
+    }
+
+    public <U> List<U> map(Function<? super Field, ? extends U> mapper) {
+        return fields.map(mapper);
+    }
+
+    public <U> List<U> flatMap(Function<? super Field, ? extends Iterable<? extends U>> mapper) {
+        return fields.flatMap(mapper);
     }
 
     public Iterator<Field> iterator() {

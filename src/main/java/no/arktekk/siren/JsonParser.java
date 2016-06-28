@@ -1,15 +1,14 @@
 package no.arktekk.siren;
 
 
+import javaslang.collection.List;
 import javaslang.control.Option;
 import net.hamnaberg.json.Json;
 import no.arktekk.siren.SubEntity.EmbeddedLink;
 import no.arktekk.siren.SubEntity.EmbeddedRepresentation;
 
 import java.net.URI;
-import java.util.List;
 import java.util.function.Function;
-import java.util.stream.Collectors;
 
 public interface JsonParser<T> {
 
@@ -98,7 +97,7 @@ public interface JsonParser<T> {
         }
 
         private <A> List<A> mapObjectList(Json.JArray list, Function<Json.JObject, A> f) {
-            return list.getListAsObjects().toJavaStream().map(f).collect(Collectors.toList());
+            return list.getListAsObjects().map(f);
         }
     }
 }

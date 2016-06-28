@@ -28,10 +28,8 @@ public interface JsonSerializer<T> {
             entity.classes.forEach(cs -> map.put("class", FromIterableString.apply(cs)));
             entity.properties.forEach(ps -> map.put("properties", ps));
             entity.entities.forEach(es -> map.put("entities", Json.jArray(es.stream().map(e -> e.toJson(this)).collect(Collectors.toList()))));
-            entity.links.forEach(ls -> map.put("links", Json.jArray(ls.stream().map(l -> {
-                return Json.jObject(entry("rel", FromIterableString.apply(l.rel)),
-                        entry("href", Json.jString(l.href.toString())));
-            }).collect(Collectors.toList()))));
+            entity.links.forEach(ls -> map.put("links", Json.jArray(ls.stream().map(l -> Json.jObject(Json.entry("rel", FromIterableString.apply(l.rel)),
+                    Json.entry("href", Json.jString(l.href.toString())))).collect(Collectors.toList()))));
             entity.actions.forEach(as -> map.put("actions", Json.jArray(as.stream().map(a -> {
                 Map<String, Json.JValue> action = new LinkedHashMap<>();
                 action.put("name", Json.jString(a.name));
@@ -54,10 +52,6 @@ public interface JsonSerializer<T> {
             }).collect(Collectors.toList()))));
             entity.title.forEach(t -> map.put("title", Json.jString(t)));
             return Json.jObject(map);
-        }
-
-        private Map.Entry<String, Json.JValue> entry(String name, Json.JValue value) {
-            return new AbstractMap.SimpleImmutableEntry<>(name, value);
         }
 
         public Json.JValue serialize(Entity entity) {

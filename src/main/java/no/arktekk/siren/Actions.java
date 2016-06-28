@@ -1,14 +1,12 @@
 package no.arktekk.siren;
 
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.SortedMap;
+import java.util.TreeMap;
 
+import javaslang.collection.*;
 import javaslang.control.Option;
-import no.arktekk.siren.util.CollectionUtils;
 import no.arktekk.siren.util.StreamableIterable;
 
-import static java.util.Arrays.asList;
-import static java.util.Collections.unmodifiableMap;
 import static java.util.Collections.unmodifiableSortedMap;
 
 /**
@@ -35,7 +33,7 @@ public final class Actions implements StreamableIterable<Action> {
     }
 
     public static Actions of(Action action, Action... actions) {
-        return new Actions(CollectionUtils.asList(action, actions));
+        return new Actions(List.of(actions).prepend(action));
     }
 
     public Actions add(Action action) {
@@ -51,9 +49,8 @@ public final class Actions implements StreamableIterable<Action> {
     }
 
     public Iterator<Action> iterator() {
-        return actions.values().iterator();
+        return List.ofAll(actions.values()).iterator();
     }
-
 
     public Option<Action> getActionByName(String name) {
         return Option.of(actions.get(name));
