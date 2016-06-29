@@ -68,7 +68,7 @@ public interface JsonParser<T> {
 
         private EmbeddedLink parseEmbeddedLink(Json.JObject embeddedLink) {
             Link link = parseLink(embeddedLink);
-            return new EmbeddedLink(link.rel, link.href, link.classes, link.type, link.title);
+            return link.toEmbedded();
         }
 
         private EmbeddedRepresentation parseEmbeddedRepresentation(Json.JObject embeddedRepresentation) {
