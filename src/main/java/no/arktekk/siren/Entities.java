@@ -1,27 +1,23 @@
 package no.arktekk.siren;
 
-import no.arktekk.siren.util.CollectionUtils;
-import no.arktekk.siren.util.StreamUtils;
+import javaslang.collection.Iterator;
+import javaslang.collection.List;
+import javaslang.control.Option;
 import no.arktekk.siren.util.StreamableIterable;
 
-import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Iterator;
-import java.util.List;
-import java.util.stream.Collectors;
-
-import static java.util.Collections.unmodifiableList;
+import java.util.function.Function;
 
 public final class Entities implements StreamableIterable<SubEntity> {
 
     private final List<SubEntity> subEntities;
 
     public Entities(List<SubEntity> entities) {
-        this.subEntities = unmodifiableList(entities);
+        this.subEntities = entities;
     }
 
     public Entities(Iterable<SubEntity> entities) {
-        this(StreamUtils.stream(entities).collect(Collectors.toList()));
+        this(List.ofAll(entities));
     }
 
     public static Entities empty() {
@@ -29,17 +25,23 @@ public final class Entities implements StreamableIterable<SubEntity> {
     }
 
     public static Entities of(SubEntity entity, SubEntity... entities) {
-        return new Entities(CollectionUtils.asList(entity, entities));
+        return new Entities(List.of(entities).prepend(entity));
     }
 
     public Entities add(SubEntity entity) {
-        List<SubEntity> entities = new ArrayList<>(this.subEntities);
-        entities.add(entity);
-        return new Entities(entities);
+        return new Entities(this.subEntities.append(entity));
     }
 
     public Entities remove(Rel rel) {
-        return new Entities(stream().filter(e -> !e.getRel().equals(rel)).collect(Collectors.toList()));
+        return new Entities(this.subEntities.filter(e -> !e.getRel().equals(rel)));
+    }
+
+    public Option<SubEntity> getEntityByRel(Rel rel) {
+        return this.subEntities.find(e -> e.getRel().equals(rel));
+    }
+
+    public <U> List<U> map(Function<? super SubEntity, ? extends U> mapper) {
+        return subEntities.map(mapper);
     }
 
     public Iterator<SubEntity> iterator() {

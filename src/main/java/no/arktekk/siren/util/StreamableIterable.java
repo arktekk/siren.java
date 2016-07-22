@@ -1,6 +1,7 @@
 package no.arktekk.siren.util;
 
-import java.util.Optional;
+import javaslang.control.Option;
+
 import java.util.stream.Stream;
 
 public interface StreamableIterable<T> extends Iterable<T> {
@@ -13,11 +14,11 @@ public interface StreamableIterable<T> extends Iterable<T> {
         return StreamUtils.parallellStream(this);
     }
 
-    default Optional<T> headOption() {
-        return stream().findFirst();
+    default Option<T> headOption() {
+        return Option.ofOptional(stream().findFirst());
     }
 
     default boolean isEmpty() {
-        return !headOption().isPresent();
+        return !headOption().isDefined();
     }
 }

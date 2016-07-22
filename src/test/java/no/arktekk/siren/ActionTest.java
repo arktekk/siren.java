@@ -4,7 +4,7 @@ import org.junit.Test;
 
 import java.net.URI;
 
-import static java.util.Optional.empty;
+import static javaslang.control.Option.none;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotSame;
 
@@ -16,12 +16,12 @@ public class ActionTest {
         Action action = Action.of("æksjen", uri);
         assertEquals("æksjen", action.name);
         assertEquals(uri, action.href);
-        assertEquals(empty(), action.title);
-        assertEquals(empty(), action.method);
-        assertEquals(empty(), action.type);
-        assertEquals(empty(), action.fields);
+        assertEquals(none(), action.title);
+        assertEquals(none(), action.method);
+        assertEquals(none(), action.type);
+        assertEquals(none(), action.fields);
 
-        Action action1 = new Action("æksjen", uri, empty(), empty(), empty(), empty(), empty());
+        Action action1 = new Action("æksjen", uri, none(), none(), none(), none(), none());
         assertEquals(action1, action);
     }
 

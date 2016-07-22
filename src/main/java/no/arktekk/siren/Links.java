@@ -1,45 +1,54 @@
 package no.arktekk.siren;
 
-import no.arktekk.siren.util.CollectionUtils;
-import no.arktekk.siren.util.StreamUtils;
+import javaslang.collection.Iterator;
+import javaslang.collection.List;
+import javaslang.control.Option;
 import no.arktekk.siren.util.StreamableIterable;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.List;
-import java.util.stream.Collectors;
-
-import static java.util.Collections.unmodifiableList;
+import java.util.function.Function;
 
 public final class Links implements StreamableIterable<Link> {
 
     private final List<Link> links;
 
     private Links(List<Link> links) {
-        this.links = unmodifiableList(links);
+        this.links = links;
     }
 
     public Links(Iterable<Link> links) {
-        this(StreamUtils.stream(links).collect(Collectors.toList()));
+        this(List.ofAll(links));
     }
 
     public static Links empty() {
-        return new Links(Collections.emptyList());
+        return new Links(List.empty());
     }
 
     public static Links of(Link link, Link... links) {
-        return new Links(CollectionUtils.asList(link, links));
+        return new Links(List.of(links).prepend(link));
     }
 
     public Links add(Link link) {
-        List<Link> entities = new ArrayList<>(this.links);
-        entities.add(link);
-        return new Links(entities);
+        return new Links(this.links.append(link));
     }
 
     public Links remove(Rel rel) {
-        return new Links(stream().filter(e -> !e.getRel().equals(rel)).collect(Collectors.toList()));
+        return new Links(links.filter(e -> !e.getRel().equals(rel)));
+    }
+
+    public Option<Link> getLinkByRel(Rel rel) {
+        return links.find(l -> l.rel.equals(rel));
+    }
+
+    public Option<Link> getLinkByRelIncludes(Rel rel) {
+        return links.find(l -> l.rel.includes(rel));
+    }
+
+    public <U> List<U> map(Function<? super Link, ? extends U> mapper) {
+        return links.map(mapper);
+    }
+
+    public <U> List<U> flatMap(Function<? super Link, ? extends Iterable<? extends U>> mapper) {
+        return links.flatMap(mapper);
     }
 
     public Iterator<Link> iterator() {

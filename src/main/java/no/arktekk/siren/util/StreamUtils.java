@@ -1,10 +1,10 @@
 package no.arktekk.siren.util;
 
+import javaslang.control.Option;
+
 import java.util.AbstractMap;
 import java.util.Iterator;
 import java.util.Map;
-import java.util.Optional;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.BiFunction;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
@@ -48,7 +48,7 @@ public abstract class StreamUtils {
         return StreamSupport.stream(iterable.spliterator(), true);
     }
 
-    public static <T> Stream<T> stream(Optional<T> opt) {
-        return opt.isPresent() ? Stream.of(opt.get()) : Stream.empty();
+    public static <T> Stream<T> stream(Option<T> opt) {
+        return opt.toJavaStream();
     }
 }

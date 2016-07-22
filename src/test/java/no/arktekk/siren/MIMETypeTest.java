@@ -1,5 +1,6 @@
 package no.arktekk.siren;
 
+import javaslang.control.Option;
 import org.hamcrest.CoreMatchers;
 import org.junit.Test;
 
@@ -25,8 +26,8 @@ public class MIMETypeTest {
         );
         AtomicInteger count = new AtomicInteger();
         map.forEach((input, ex) -> {
-            Optional<MIMEType> parsed = MIMEType.parse(input);
-            assertTrue(parsed.isPresent());
+            Option<MIMEType> parsed = MIMEType.parse(input);
+            assertTrue(parsed.isDefined());
             assertEquals(parsed.get(), ex);
             count.incrementAndGet();
         });
@@ -63,7 +64,7 @@ public class MIMETypeTest {
 
     @Test
     public void parse() {
-        Optional<MIMEType> type = MIMEType.parse("application/x-www-form-urlencoded");
-        assertTrue(type.map(MIMEType.application("x-www-form-urlencoded")::equals).orElse(false));
+        Option<MIMEType> type = MIMEType.parse("application/x-www-form-urlencoded");
+        assertTrue(type.map(MIMEType.application("x-www-form-urlencoded")::equals).getOrElse(false));
     }
 }

@@ -1,17 +1,14 @@
 package no.arktekk.siren.util;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.function.BiFunction;
 
-public abstract class CollectionUtils {
-    private CollectionUtils() {
-    }
+public class CollectionUtils {
 
-    public static <A> List<A> asList(A first, A... rest) {
-        ArrayList<A> list = new ArrayList<>(rest.length + 1);
-        list.add(first);
-        list.addAll(Arrays.asList(rest));
-        return list;
+    public static <A, C> C foldLeft(Iterable<A> iterable, C empty, BiFunction<C, A, C> accFunction) {
+        C agg = empty;
+        for (A a : iterable) {
+            agg = accFunction.apply(agg, a);
+        }
+        return agg;
     }
 }

@@ -1,20 +1,19 @@
 package no.arktekk.siren;
 
+import javaslang.control.Option;
 import net.hamnaberg.json.Json;
 
-import java.util.Optional;
-
-import static java.util.Optional.empty;
+import static javaslang.control.Option.none;
 
 public final class Entity implements JsonSerializable {
-    public final Optional<Classes> classes;
-    public final Optional<Json.JObject> properties;
-    public final Optional<Entities> entities;
-    public final Optional<Actions> actions;
-    public final Optional<Links> links;
-    public final Optional<String> title;
+    public final Option<Classes> classes;
+    public final Option<Json.JObject> properties;
+    public final Option<Entities> entities;
+    public final Option<Actions> actions;
+    public final Option<Links> links;
+    public final Option<String> title;
 
-    public Entity(Optional<Classes> classes, Optional<Json.JObject> properties, Optional<Entities> entities, Optional<Actions> actions, Optional<Links> links, Optional<String> title) {
+    public Entity(Option<Classes> classes, Option<Json.JObject> properties, Option<Entities> entities, Option<Actions> actions, Option<Links> links, Option<String> title) {
         this.classes = classes;
         this.properties = properties;
         this.entities = entities;
@@ -24,62 +23,59 @@ public final class Entity implements JsonSerializable {
     }
 
     public static Entity of() {
-        return new Entity(empty(), empty(), empty(), empty(), empty(), empty());
+        return new Entity(none(), none(), none(), none(), none(), none());
     }
 
     public Entity with(Classes classes) {
-        return new Entity(Optional.of(classes), properties, entities, actions, links, title);
+        return new Entity(Option.of(classes), properties, entities, actions, links, title);
     }
 
     public Entity with(Json.JObject properties) {
-        return new Entity(classes, Optional.of(properties), entities, actions, links, title);
+        return new Entity(classes, Option.of(properties), entities, actions, links, title);
     }
 
     public Entity with(Entities entities) {
-        return new Entity(classes, properties, Optional.of(entities), actions, links, title);
+        return new Entity(classes, properties, Option.of(entities), actions, links, title);
     }
 
     public Entity with(Actions actions) {
-        return new Entity(classes, properties, entities, Optional.of(actions), links, title);
+        return new Entity(classes, properties, entities, Option.of(actions), links, title);
     }
 
     public Entity with(Links links) {
-        return new Entity(classes, properties, entities, actions, Optional.of(links), title);
+        return new Entity(classes, properties, entities, actions, Option.of(links), title);
     }
 
     public Entity with(String title) {
-        return new Entity(classes, properties, entities, actions, links, Optional.of(title));
+        return new Entity(classes, properties, entities, actions, links, Option.of(title));
     }
 
     public SubEntity.EmbeddedRepresentation toEmbedded(Rel rel) {
         return new SubEntity.EmbeddedRepresentation(rel, this);
     }
 
-    public Optional<Link> getLinkByRel(Rel rel) {
-        return links.flatMap(links -> links.stream().filter(l -> l.rel.equals(rel)).findFirst());
+    public Option<Link> getLinkByRel(Rel rel) {
+        return links.flatMap(links -> links.getLinkByRel(rel));
     }
 
-    public Optional<Link> getLinkByRelIncludes(Rel rel) {
-        return links.flatMap(links -> links.stream().filter(l -> l.rel.includes(rel)).findFirst());
+    public Option<Link> getLinkByRelIncludes(Rel rel) {
+        return links.flatMap(links -> links.getLinkByRelIncludes(rel));
     }
 
-    public Optional<Action> getActionByName(String name) {
-        return actions.flatMap(actions -> actions.stream().filter(l -> l.name.equals(name)).findFirst());
+    public Option<Action> getActionByName(String name) {
+        return actions.flatMap(actions -> actions.getActionByName(name));
     }
 
-    public Optional<Action> getActionByClasses(Classes classes) {
-        return actions.flatMap(actions -> actions.stream().filter(l -> l.classes.filter(classes::equals).isPresent()).findFirst());
-    }
-    public Optional<Action> getActionByClassesIncludes(Classes classes) {
-        return actions.flatMap(actions -> actions.stream().filter(l -> l.classes.filter(classes::includes).isPresent()).findFirst());
+    public Option<Action> getActionByClasses(Classes classes) {
+        return actions.flatMap(actions -> actions.getActionByClasses(classes));
     }
 
-    public Optional<SubEntity> getEntityByRel(Rel rel) {
-        return entities.flatMap(entities ->
-                        entities.stream().
-                                filter(l -> l.fold(e -> e.rel.equals(rel), e -> e.rel.equals(rel))).
-                                findFirst()
-        );
+    public Option<Action> getActionByClassesIncludes(Classes classes) {
+        return actions.flatMap(actions -> actions.getActionByClassesIncludes(classes));
+    }
+
+    public Option<SubEntity> getEntityByRel(Rel rel) {
+        return entities.flatMap(entities -> entities.getEntityByRel(rel));
     }
 
     @Override
@@ -109,43 +105,43 @@ public final class Entity implements JsonSerializable {
         return result;
     }
 
-    public Optional<Classes> getClasses() {
+    public Option<Classes> getClasses() {
         return classes;
     }
 
-    public Optional<Json.JObject> getProperties() {
+    public Option<Json.JObject> getProperties() {
         return properties;
     }
 
     public Json.JObject getPropertiesOrEmpty() {
-        return properties.orElse(Json.jEmptyObject());
+        return properties.getOrElse(Json.jEmptyObject());
     }
 
-    public Optional<Entities> getEntities() {
+    public Option<Entities> getEntities() {
         return entities;
     }
 
     public Entities getEntitiesOrEmpty() {
-        return entities.orElse(Entities.empty());
+        return entities.getOrElse(Entities.empty());
     }
 
-    public Optional<Actions> getActions() {
+    public Option<Actions> getActions() {
         return actions;
     }
 
     public Actions getActionsOrEmpty() {
-        return actions.orElse(Actions.empty());
+        return actions.getOrElse(Actions.empty());
     }
 
-    public Optional<Links> getLinks() {
+    public Option<Links> getLinks() {
         return links;
     }
 
     public Links getLinksOrEmpty() {
-        return links.orElse(Links.empty());
+        return links.getOrElse(Links.empty());
     }
 
-    public Optional<String> getTitle() {
+    public Option<String> getTitle() {
         return title;
     }
 

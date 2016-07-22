@@ -1,12 +1,12 @@
 package no.arktekk.siren;
 
+import javaslang.control.Option;
 import net.hamnaberg.json.Json;
 import no.arktekk.siren.Field.Type;
 import org.junit.Test;
 
-import java.util.Optional;
 
-import static java.util.Optional.empty;
+import static javaslang.control.Option.none;
 import static org.junit.Assert.assertEquals;
 
 public class FieldTest {
@@ -15,9 +15,9 @@ public class FieldTest {
     public void construct() {
         Field field = Field.of("foo").with(Json.jString("bar"));
         assertEquals(field.name, "foo");
-        assertEquals(field.value, Optional.of(Json.jString("bar")));
-        assertEquals(field.classes, empty());
-        assertEquals(field.title, empty());
+        assertEquals(field.value, Option.of(Json.jString("bar")));
+        assertEquals(field.classes, none());
+        assertEquals(field.title, none());
         assertEquals(field.type, Type.TEXT);
     }
 }
