@@ -1,5 +1,6 @@
 package no.arktekk.siren.util;
 
+import javaslang.collection.List;
 import javaslang.control.Option;
 
 import java.util.stream.Stream;
@@ -20,5 +21,9 @@ public interface StreamableIterable<T> extends Iterable<T> {
 
     default boolean isEmpty() {
         return !headOption().isDefined();
+    }
+
+    default List<T> toList() {
+        return List.ofAll(this);
     }
 }
