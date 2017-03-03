@@ -2,7 +2,6 @@ package no.arktekk.siren.field;
 
 import javaslang.control.Option;
 import net.hamnaberg.json.Json;
-import net.hamnaberg.json.io.JacksonStreamingSerializer;
 import no.arktekk.siren.Fields;
 import no.arktekk.siren.MIMEType;
 
@@ -16,6 +15,6 @@ public enum JSONFieldSerializer implements FieldSerializer {
 
     private String jsonFields(Fields fields) {
         Json.JObject object = fields.toList().foldLeft(Json.jEmptyObject(), (json, field) -> json.put(field.name, field.value.getOrElse(Json.jNull())));
-        return new JacksonStreamingSerializer().writeToString(object);
+        return object.nospaces();
     }
 }

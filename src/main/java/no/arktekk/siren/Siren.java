@@ -1,16 +1,16 @@
 package no.arktekk.siren;
 
-import net.hamnaberg.json.Json;
-import net.hamnaberg.json.io.JacksonStreamingParser;
-import net.hamnaberg.json.io.JacksonStreamingSerializer;
-
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.Writer;
+import java.nio.charset.Charset;
+
+import net.hamnaberg.json.Json;
+import net.hamnaberg.json.jackson.JacksonStreamingParser;
 
 public final class Siren {
     private static final JacksonStreamingParser streamParser = new JacksonStreamingParser();
-    private static final JacksonStreamingSerializer serializer = new JacksonStreamingSerializer();
 
     public static Entity parse(InputStream is) {
         Json.JValue parse = streamParser.parse(is);
@@ -30,18 +30,17 @@ public final class Siren {
         return JsonSerializer.ImmutableJsonSerializer.INSTANCE.serialize(entity);
     }
 
-    public static void write(Entity entity, OutputStream stream) {
+    public static void write(Entity entity, OutputStream stream) throws IOException {
         Json.JValue json = toJson(entity);
-        serializer.write(json, stream);
+        stream.write(json.nospaces().getBytes(Charset.forName("UTF-8")));
     }
-    public static void write(Entity entity, Writer stream) {
-        Json.JValue json = toJson(entity);
-        serializer.write(json, stream);
+
+    public static void write(Entity entity, Writer stream) throws IOException {
+        stream.write(toJson(entity).nospaces());
     }
 
     public static String toString(Entity entity) {
-        Json.JValue json = toJson(entity);
-        return serializer.writeToString(json);
+        return toJson(entity).nospaces();
     }
 
 }
