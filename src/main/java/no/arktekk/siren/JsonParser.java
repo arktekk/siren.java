@@ -78,14 +78,17 @@ public interface JsonParser<T> {
         }
 
         private Field parseField(Json.JObject field) {
-            Option<String> name = field.getAsString("name");
-            if (!name.isDefined()) {
-                throw new SirenParseException(String.format("Missing required 'name' field in Field '%s", field));
-            }
-            Option<Classes> classes = field.getAsArray("class").map(cs -> new Classes(cs.getListAsStrings()));
-            Field.Type type = Field.Type.fromString(field.getAsString("type").getOrElse("text"));
+            String name = field.getAsString("name").getOrElseThrow(() -> new SirenParseException(String.format("Missing required 'name' field in Field '%s", field)));
 
-            return new Field(name.get(), type, classes, field.get("value"), parseTitle(field));
+            Option<Classes> classes = field.getAsArray("class").map(cs -> new Classes(cs.getListAsStrings()));
+            Option<Json.JValue> value = field.get("value");
+            Option<String> title = parseTitle(field);
+
+            Option<Field> maybeNested = field.getAsArray("fields").map(fs -> new Fields(mapObjectList(fs, this::parseField))).map(schema -> new Field.NestedField(name, schema, classes, value, title));
+            return maybeNested.getOrElse(() -> {
+                Field.Type type = Field.Type.fromString(field.getAsString("type").getOrElse("text"));
+                return new Field.SimpleField(name, type, classes, value, title);
+            });
         }
 
         private URI getHref(Json.JObject obj, String name) {
