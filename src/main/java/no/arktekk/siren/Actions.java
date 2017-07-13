@@ -3,8 +3,8 @@ package no.arktekk.siren;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
-import javaslang.collection.*;
-import javaslang.control.Option;
+import io.vavr.collection.*;
+import io.vavr.control.Option;
 import no.arktekk.siren.util.StreamableIterable;
 
 import static java.util.Collections.unmodifiableSortedMap;

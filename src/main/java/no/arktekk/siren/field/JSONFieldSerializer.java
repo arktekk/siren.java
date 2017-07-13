@@ -1,6 +1,6 @@
 package no.arktekk.siren.field;
 
-import javaslang.control.Option;
+import io.vavr.control.Option;
 import net.hamnaberg.json.Json;
 import no.arktekk.siren.Fields;
 import no.arktekk.siren.MIMEType;

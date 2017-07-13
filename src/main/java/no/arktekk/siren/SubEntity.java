@@ -1,11 +1,11 @@
 package no.arktekk.siren;
 
-import javaslang.control.Option;
+import io.vavr.control.Option;
 
 import java.net.URI;
 import java.util.function.Function;
 
-import static javaslang.control.Option.none;
+import static io.vavr.control.Option.none;
 
 
 public abstract class SubEntity implements JsonSerializable {

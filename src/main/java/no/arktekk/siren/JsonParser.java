@@ -1,8 +1,8 @@
 package no.arktekk.siren;
 
 
-import javaslang.collection.List;
-import javaslang.control.Option;
+import io.vavr.collection.List;
+import io.vavr.control.Option;
 import net.hamnaberg.json.Json;
 import no.arktekk.siren.SubEntity.EmbeddedLink;
 import no.arktekk.siren.SubEntity.EmbeddedRepresentation;

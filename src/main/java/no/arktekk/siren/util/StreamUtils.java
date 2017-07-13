@@ -1,6 +1,6 @@
 package no.arktekk.siren.util;
 
-import javaslang.control.Option;
+import io.vavr.control.Option;
 
 import java.util.AbstractMap;
 import java.util.Iterator;

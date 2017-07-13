@@ -1,7 +1,7 @@
 package no.arktekk.siren;
 
-import javaslang.control.Option;
-import static javaslang.control.Option.none;
+import io.vavr.control.Option;
+import static io.vavr.control.Option.none;
 
 import no.arktekk.siren.field.FieldSerializer;
 import no.arktekk.siren.field.WWWUrlEncodedFieldSerializer;

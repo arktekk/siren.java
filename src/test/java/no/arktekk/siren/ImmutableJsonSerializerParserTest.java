@@ -1,6 +1,6 @@
 package no.arktekk.siren;
 
-import javaslang.control.Option;
+import io.vavr.control.Option;
 import net.hamnaberg.json.Json;
 import no.arktekk.siren.SubEntity.EmbeddedLink;
 import no.arktekk.siren.SubEntity.EmbeddedRepresentation;
@@ -11,7 +11,7 @@ import java.util.AbstractMap;
 import java.util.Map;
 
 import static java.util.Collections.singletonList;
-import static javaslang.control.Option.none;
+import static io.vavr.control.Option.none;
 import static no.arktekk.siren.Field.Type.NUMBER;
 import static no.arktekk.siren.MIMEType.URLEncoded;
 import static no.arktekk.siren.Method.POST;

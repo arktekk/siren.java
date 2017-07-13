@@ -4,7 +4,7 @@ import org.junit.Test;
 
 import java.net.URI;
 
-import static javaslang.control.Option.none;
+import static io.vavr.control.Option.none;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotSame;
 

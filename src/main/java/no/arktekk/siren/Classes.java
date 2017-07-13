@@ -1,6 +1,6 @@
 package no.arktekk.siren;
 
-import javaslang.collection.List;
+import io.vavr.collection.List;
 import no.arktekk.siren.util.StreamableIterable;
 
 import java.util.Collections;

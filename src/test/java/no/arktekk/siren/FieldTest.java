@@ -1,12 +1,12 @@
 package no.arktekk.siren;
 
-import javaslang.control.Option;
+import io.vavr.control.Option;
 import net.hamnaberg.json.Json;
 import no.arktekk.siren.Field.Type;
 import org.junit.Test;
 
 
-import static javaslang.control.Option.none;
+import static io.vavr.control.Option.none;
 import static org.junit.Assert.assertEquals;
 
 public class FieldTest {

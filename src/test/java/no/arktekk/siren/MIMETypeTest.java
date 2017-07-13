@@ -1,6 +1,6 @@
 package no.arktekk.siren;
 
-import javaslang.control.Option;
+import io.vavr.control.Option;
 import org.hamcrest.CoreMatchers;
 import org.junit.Test;
 

@@ -1,9 +1,9 @@
 package no.arktekk.siren;
 
-import javaslang.control.Option;
+import io.vavr.control.Option;
 import net.hamnaberg.json.Json;
 
-import static javaslang.control.Option.none;
+import static io.vavr.control.Option.none;
 
 
 public final class Field {
