@@ -2,6 +2,9 @@ package no.arktekk.siren;
 
 import io.vavr.control.Option;
 import net.hamnaberg.json.Json;
+import net.hamnaberg.json.codec.DecodeJson;
+import net.hamnaberg.json.codec.DecodeResult;
+import net.hamnaberg.json.codec.EncodeJson;
 
 import static io.vavr.control.Option.none;
 
@@ -48,6 +51,14 @@ public final class Entity implements JsonSerializable {
 
     public Entity with(String title) {
         return new Entity(classes, properties, entities, actions, links, Option.of(title));
+    }
+
+    public <A> DecodeResult<A> decodeProperties(DecodeJson<A> decoder) {
+        return decoder.fromJson(properties.getOrElse(Json.jEmptyObject()));
+    }
+
+    public <A> Entity encodeProperties(EncodeJson<A> encoder, A value) {
+        return with(encoder.toJson(value).asJsonObjectOrEmpty());
     }
 
     public SubEntity.EmbeddedRepresentation toEmbedded(Rel rel) {
