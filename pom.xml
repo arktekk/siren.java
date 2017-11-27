@@ -77,12 +77,12 @@
     <dependency>
       <groupId>net.hamnaberg.json</groupId>
       <artifactId>immutable-json-jackson</artifactId>
-      <version>6.0.0</version>
+      <version>6.1.0</version>
     </dependency>
     <dependency>
       <groupId>net.hamnaberg.json</groupId>
       <artifactId>immutable-json-codec</artifactId>
-      <version>6.0.0</version>
+      <version>6.1.0</version>
       <optional>true</optional>
     </dependency>
     <dependency>
